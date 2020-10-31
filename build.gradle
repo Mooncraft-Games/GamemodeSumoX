@@ -12,9 +12,13 @@ repositories {
     maven {
         url = 'https://repo.nukkitx.com/maven-snapshots'
     }
+    maven {
+        url = 'http://repo.lucgameshd.de/repository/maven-public'
+    }
 }
 
 dependencies {
     compile 'cn.nukkit:nukkit:1.0-SNAPSHOT'
+    compile 'de.lucgameshd:ScoreboardAPI:1.4'
     compileOnly fileTree(dir: 'libs', include: '*jar')
 }
