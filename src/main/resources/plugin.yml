@@ -1,0 +1,10 @@
+name: GamemodeSumoX
+main: net.mooncraftgames.mantle.gamemodesumox.SumoX
+load: POSTWORLD
+version: "2.0.0"
+api: ["1.0.9"]
+prefix: "gmsumox"
+
+author: "CG360 @ Mooncraft Games"
+description: "A revised version of Sumo, compatible with NGAPI Uramaki GDK"
+depend: ["NewGamesAPI1"]
