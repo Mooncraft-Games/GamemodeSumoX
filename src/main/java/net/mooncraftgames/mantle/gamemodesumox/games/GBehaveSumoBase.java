@@ -58,8 +58,12 @@ public class GBehaveSumoBase extends GameBehavior {
 
 
     protected void handleTimerTick(){
+        checkMidGameWinStatus();
         if(isTimerEnabled){
             roundTimer--;
+            if(roundTimer < 0){
+                declareWinByTimerEnd();
+            }
         }
         if(isPanicModeAllowed){
             if(!isInPanicMode){
@@ -86,6 +90,15 @@ public class GBehaveSumoBase extends GameBehavior {
                 bossBar.setColor(bartimerColour);
             }
         }
+    }
+
+    protected void checkMidGameWinStatus(){
+
+    }
+
+    protected void declareWinByTimerEnd(){
+        //TODO: Add a way to declare winners with a player[]
+        getSessionHandler().declareVictoryForEveryone();
     }
 
     protected void sendPanicWarning(){
