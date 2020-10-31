@@ -5,12 +5,15 @@ import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.EventPriority;
 import cn.nukkit.event.entity.EntityDamageByEntityEvent;
 import cn.nukkit.level.Sound;
+import cn.nukkit.utils.BlockColor;
+import cn.nukkit.utils.DummyBossBar;
 import cn.nukkit.utils.TextFormat;
 import net.mooncraftgames.mantle.gamemodesumox.SumoXConstants;
 import net.mooncraftgames.mantle.gamemodesumox.SumoXKeys;
 import net.mooncraftgames.mantle.gamemodesumox.SumoXStrings;
-import net.mooncraftgames.mantle.newgamesapi.Utility;
 import net.mooncraftgames.mantle.newgamesapi.game.GameBehavior;
+
+import java.util.HashMap;
 
 public class GBehaveSumoBase extends GameBehavior {
 
@@ -21,13 +24,31 @@ public class GBehaveSumoBase extends GameBehavior {
 
     // Game Configurables - For game flavours.
     protected boolean isTimerEnabled = true;
+    protected boolean isTimerBarDisplayed = true;
     protected boolean isPanicModeAllowed = true;
 
+    protected HashMap<Player, DummyBossBar> bartimerBossbars;
+    protected TextFormat bartimerMainTextColour;
+    protected TextFormat bartimerSubTextColour;
+    protected BlockColor bartimerColour;
 
     @Override
     public void onInitialCountdownEnd() {
         this.maxTimer = Math.max(getSessionHandler().getPrimaryMapID().getIntegers().getOrDefault(SumoXKeys.SUMO_INTEGER_TIMER, SumoXConstants.BASE_TIMER_LEGNTH), 10);
         this.roundTimer = this.maxTimer;
+
+        String timebarText = getTimerbarText();
+        for(Player player: getSessionHandler().getPlayers()){
+            DummyBossBar bar = new DummyBossBar.Builder(player)
+                    .color(BlockColor.BLUE_BLOCK_COLOR)
+                    .length(100)
+                    .text(timebarText)
+                    .build();
+            player.createBossBar(bar);
+
+            DummyBossBar oldBar = bartimerBossbars.put(player, bar);
+            if(oldBar != null) oldBar.destroy();
+        }
     }
 
     @Override
@@ -47,7 +68,22 @@ public class GBehaveSumoBase extends GameBehavior {
                     getSessionHandler().getGameScheduler().registerGameTask(this::sendPanicWarning, 0);
                     getSessionHandler().getGameScheduler().registerGameTask(this::sendPanicWarning, 40);
                     getSessionHandler().getGameScheduler().registerGameTask(this::sendPanicWarning, 80);
+
+                    bartimerMainTextColour = TextFormat.RED;
+                    bartimerSubTextColour = TextFormat.GOLD;
+                    bartimerColour = BlockColor.RED_BLOCK_COLOR;
                 }
+            }
+        }
+
+        if(isTimerBarDisplayed){
+            String timebarText = getTimerbarText();
+            float timebarValue = ((float) roundTimer) / maxTimer;
+
+            for(DummyBossBar bossBar: bartimerBossbars.values()){
+                bossBar.setLength(timebarValue);
+                bossBar.setText(timebarText);
+                bossBar.setColor(bartimerColour);
             }
         }
     }
@@ -57,6 +93,14 @@ public class GBehaveSumoBase extends GameBehavior {
             player.sendTitle(SumoXStrings.PANIC_TITLE, SumoXStrings.PANIC_SUBTITILE, 15, 5, 15);
             player.getLevel().addSound(player.getPosition(), Sound.BEACON_POWER, 0.5f, 1.2f, player);
         }
+    }
+
+    protected String getTimerbarText(){
+        return String.format("\n\n%s%sTime Remaining: %s%s%s", bartimerMainTextColour, TextFormat.BOLD, bartimerSubTextColour, TextFormat.BOLD, roundTimer);
+    }
+
+    public int getTimeElapsed() {
+        return maxTimer-roundTimer;
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
@@ -77,7 +121,4 @@ public class GBehaveSumoBase extends GameBehavior {
         }
     }
 
-    public int getTimeElapsed() {
-        return maxTimer-roundTimer;
-    }
 }
