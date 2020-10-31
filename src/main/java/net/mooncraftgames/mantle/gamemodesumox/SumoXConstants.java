@@ -13,6 +13,11 @@ public final class SumoXConstants {
     /** base * (1.05^finals_time) = compound 5% boost every second. */
     public static final float PANIC_KNOCKBACK_MULTIPLIER = 1.05f;
 
+    /** Time in seconds to respawn. */
+    public static final int DEFAULT_RESPAWN_SECONDS = 5;
+
+    /** Lives before a player cannot respawn. */
+    public static final int DEFAULT_LIVES = 3;
 
 
     // -- ANTI-CAMP --
