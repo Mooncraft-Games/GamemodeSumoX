@@ -12,8 +12,12 @@ import net.mooncraftgames.mantle.gamemodesumox.SumoXConstants;
 import net.mooncraftgames.mantle.gamemodesumox.SumoXKeys;
 import net.mooncraftgames.mantle.gamemodesumox.SumoXStrings;
 import net.mooncraftgames.mantle.newgamesapi.game.GameBehavior;
+import net.mooncraftgames.mantle.newgamesapi.team.DeadTeam;
+import net.mooncraftgames.mantle.newgamesapi.team.Team;
+import net.mooncraftgames.mantle.newgamesapi.team.TeamPresets;
 
 import java.util.HashMap;
+import java.util.Optional;
 
 public class GBehaveSumoBase extends GameBehavior {
 
@@ -60,6 +64,27 @@ public class GBehaveSumoBase extends GameBehavior {
         getSessionHandler().getGameScheduler().registerGameTask(this::handleTimerTick, 20, 20);
     }
 
+    @Override
+    public Optional<Team> onMidGameJoinEvent(Player player) {
+        DummyBossBar bar = new DummyBossBar.Builder(player)
+                .color(bartimerColour)
+                .length(100)
+                .text(getTimerbarText())
+                .build();
+        player.createBossBar(bar);
+        bartimerBossbars.put(player, bar);
+
+        return Optional.empty();
+    }
+
+    @Override
+    public void onPlayerLeaveGame(Player player) {
+        DummyBossBar b = bartimerBossbars.remove(player);
+        if (b != null){
+            b.destroy();
+        }
+        player.clearTitle();
+    }
 
     protected void handleTimerTick(){
         checkMidGameWinStatus();
