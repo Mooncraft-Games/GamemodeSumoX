@@ -37,10 +37,14 @@ public class GBehaveSumoBase extends GameBehavior {
         this.maxTimer = Math.max(getSessionHandler().getPrimaryMapID().getIntegers().getOrDefault(SumoXKeys.SUMO_INTEGER_TIMER, SumoXConstants.BASE_TIMER_LEGNTH), 10);
         this.roundTimer = this.maxTimer;
 
+        bartimerMainTextColour = TextFormat.BLUE;
+        bartimerSubTextColour = TextFormat.DARK_AQUA;
+        bartimerColour = BlockColor.BLUE_BLOCK_COLOR;
+
         String timebarText = getTimerbarText();
         for(Player player: getSessionHandler().getPlayers()){
             DummyBossBar bar = new DummyBossBar.Builder(player)
-                    .color(BlockColor.BLUE_BLOCK_COLOR)
+                    .color(bartimerColour)
                     .length(100)
                     .text(timebarText)
                     .build();
