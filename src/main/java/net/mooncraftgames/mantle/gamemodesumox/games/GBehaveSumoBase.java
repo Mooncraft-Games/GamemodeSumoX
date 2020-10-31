@@ -12,6 +12,7 @@ import net.mooncraftgames.mantle.gamemodesumox.SumoXConstants;
 import net.mooncraftgames.mantle.gamemodesumox.SumoXKeys;
 import net.mooncraftgames.mantle.gamemodesumox.SumoXStrings;
 import net.mooncraftgames.mantle.newgamesapi.game.GameBehavior;
+import net.mooncraftgames.mantle.newgamesapi.game.events.GamePlayerDeathEvent;
 import net.mooncraftgames.mantle.newgamesapi.team.DeadTeam;
 import net.mooncraftgames.mantle.newgamesapi.team.Team;
 import net.mooncraftgames.mantle.newgamesapi.team.TeamPresets;
@@ -21,15 +22,19 @@ import java.util.Optional;
 
 public class GBehaveSumoBase extends GameBehavior {
 
+    // Game Configurables - For game flavours.
+    protected boolean isTimerEnabled = true;
+    protected boolean isTimerBarDisplayed = true;
+    protected boolean isPanicModeAllowed = true;
+
+    // Game Values
     protected int maxTimer = -1;
     protected int roundTimer = -1;
 
     protected boolean isInPanicMode = false;
 
-    // Game Configurables - For game flavours.
-    protected boolean isTimerEnabled = true;
-    protected boolean isTimerBarDisplayed = true;
-    protected boolean isPanicModeAllowed = true;
+    protected int defaultTally;
+    protected HashMap<Player, Integer> lifeTally;
 
     protected HashMap<Player, DummyBossBar> bartimerBossbars;
     protected TextFormat bartimerMainTextColour;
@@ -38,12 +43,17 @@ public class GBehaveSumoBase extends GameBehavior {
 
     @Override
     public void onInitialCountdownEnd() {
-        this.maxTimer = Math.max(getSessionHandler().getPrimaryMapID().getIntegers().getOrDefault(SumoXKeys.SUMO_INTEGER_TIMER, SumoXConstants.BASE_TIMER_LEGNTH), 10);
+        this.maxTimer = Math.max(getSessionHandler().getPrimaryMapID().getIntegers().getOrDefault(SumoXKeys.INT_TIMER, SumoXConstants.BASE_TIMER_LEGNTH), 10);
         this.roundTimer = this.maxTimer;
 
-        bartimerMainTextColour = TextFormat.BLUE;
-        bartimerSubTextColour = TextFormat.DARK_AQUA;
-        bartimerColour = BlockColor.BLUE_BLOCK_COLOR;
+        this.defaultTally = Math.max(getSessionHandler().getPrimaryMapID().getIntegers().getOrDefault(SumoXKeys.INT_LIVES, SumoXConstants.DEFAULT_LIVES), 1);
+        this.lifeTally = new HashMap<>();
+
+        this.bartimerBossbars = new HashMap<>();
+        this.bartimerMainTextColour = TextFormat.BLUE;
+        this.bartimerSubTextColour = TextFormat.DARK_AQUA;
+        this.bartimerColour = BlockColor.BLUE_BLOCK_COLOR;
+
 
         String timebarText = getTimerbarText();
         for(Player player: getSessionHandler().getPlayers()){
@@ -56,6 +66,8 @@ public class GBehaveSumoBase extends GameBehavior {
 
             DummyBossBar oldBar = bartimerBossbars.put(player, bar);
             if(oldBar != null) oldBar.destroy();
+
+            lifeTally.put(player, defaultTally);
         }
     }
 
@@ -84,6 +96,15 @@ public class GBehaveSumoBase extends GameBehavior {
             b.destroy();
         }
         player.clearTitle();
+    }
+
+    @Override public void onGameDeathByBlock(GamePlayerDeathEvent event) { handleDeath(event); }
+    @Override public void onGameDeathByEntity(GamePlayerDeathEvent event) { handleDeath(event); }
+    @Override public void onGameDeathByPlayer(GamePlayerDeathEvent event) { handleDeath(event); }
+    @Override public void onGameMiscDeathEvent(GamePlayerDeathEvent event) { handleDeath(event); }
+
+    public void handleDeath(GamePlayerDeathEvent event){
+        event.setRespawnSeconds(5);
     }
 
     protected void handleTimerTick(){
