@@ -104,7 +104,22 @@ public class GBehaveSumoBase extends GameBehavior {
     @Override public void onGameMiscDeathEvent(GamePlayerDeathEvent event) { handleDeath(event); }
 
     public void handleDeath(GamePlayerDeathEvent event){
-        event.setRespawnSeconds(5);
+        Player player = event.getDeathCause().getVictim();
+        int newVal = lifeTally.getOrDefault(player, 1) - 1;
+        if(newVal <= 0){
+            player.sendTitle(SumoXStrings.DEAD_TITLE, SumoXStrings.DEAD_SUBTITLE, 5, 50, 5);
+            event.setDeathState(GamePlayerDeathEvent.DeathState.MOVE_TO_DEAD_SPECTATORS);
+        } else {
+            int respawnTime = getSessionHandler().getPrimaryMapID().getIntegers().getOrDefault(SumoXKeys.INT_LIVES, SumoXConstants.DEFAULT_LIVES);
+            if(respawnTime < 1){
+                event.setDeathState(GamePlayerDeathEvent.DeathState.INSTANT_RESPAWN);
+            } else {
+                event.setDeathState(GamePlayerDeathEvent.DeathState.TIMED_RESPAWN);
+                event.setRespawnSeconds(respawnTime);
+            }
+
+            lifeTally.put(player, newVal);
+        }
     }
 
     protected void handleTimerTick(){
