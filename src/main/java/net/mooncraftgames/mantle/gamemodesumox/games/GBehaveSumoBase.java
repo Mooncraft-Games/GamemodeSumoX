@@ -13,6 +13,7 @@ import net.mooncraftgames.mantle.gamemodesumox.SumoXConstants;
 import net.mooncraftgames.mantle.gamemodesumox.SumoXKeys;
 import net.mooncraftgames.mantle.gamemodesumox.SumoXStrings;
 import net.mooncraftgames.mantle.newgamesapi.game.GameBehavior;
+import net.mooncraftgames.mantle.newgamesapi.game.GameHandler;
 import net.mooncraftgames.mantle.newgamesapi.game.deaths.DeathManager;
 import net.mooncraftgames.mantle.newgamesapi.game.events.GamePlayerDeathEvent;
 import net.mooncraftgames.mantle.newgamesapi.team.DeadTeam;
@@ -166,9 +167,10 @@ public class GBehaveSumoBase extends GameBehavior {
     }
 
     @Override
-    public void onRemovePlayerFromTeam(Player player, Team team) {
-        // Should account for leaving game + death.
-        checkMidGameWinStatus();
+    public void onAddPlayerToTeam(Player player, Team team) {
+        if(getSessionHandler().getGameState() == GameHandler.GameState.MAIN_LOOP){
+            checkMidGameWinStatus();
+        }
     }
 
     protected void checkMidGameWinStatus(){
