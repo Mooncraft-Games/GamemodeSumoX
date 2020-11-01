@@ -264,17 +264,18 @@ public class GBehaveSumoBase extends GameBehavior {
         }
 
         int liveListIndex = 0;
-        for(int i = 14; i > 8; i--){
+        for(int i = 14; i > 9; i--){
             if(topScores.size() > liveListIndex){
                 entryTally.add(display.addLine(getLivesText(topScores.get(liveListIndex).getKey().getDisplayName(), topScores.get(liveListIndex).getValue().toString()), i));
+                liveListIndex++;
             } else {
-                entryTally.add(display.addLine(String.format("%s%s???", TextFormat.DARK_GRAY, TextFormat.BOLD), i));
+                entryTally.add(display.addLine(String.format("%s%s???"+buildWhitespace(i-10), TextFormat.DARK_GRAY, TextFormat.BOLD), i));
             }
         }
 
-        entryTally.add(display.addLine(String.format("%s%s...", TextFormat.GRAY, TextFormat.BOLD), 8));
-        entryTally.add(display.addLine(getLivesText("You", lifeTally.get(player).toString()), 7));
-        entryTally.add(display.addLine(" ", 6));
+        entryTally.add(display.addLine(String.format("%s%s...", TextFormat.GRAY, TextFormat.BOLD), 9));
+        entryTally.add(display.addLine(getLivesText("You", lifeTally.get(player).toString()), 8));
+        entryTally.add(display.addLine("  ", 7));
         scoreboardEntries.put(player, entryTally);
     }
 
@@ -284,6 +285,14 @@ public class GBehaveSumoBase extends GameBehavior {
 
     protected String getLivesText(String name, String lives){
         return String.format("%s%s%s: %s%s%s %s%sLives", TextFormat.GOLD, TextFormat.BOLD, name, TextFormat.RED, TextFormat.BOLD, lives, TextFormat.DARK_RED, TextFormat.BOLD);
+    }
+
+    public String buildWhitespace(int quantity){
+        StringBuilder sb = new StringBuilder();
+        for(int i = 0; i < quantity; i++){
+            sb.append(" ");
+        }
+        return sb.toString();
     }
 
     public int getTimeElapsed() {
