@@ -51,7 +51,6 @@ public class GBehaveSumoBase extends GameBehavior {
     protected TextFormat bartimerSubTextColour;
     protected BlockColor bartimerColour;
 
-    protected Scoreboard mainboard;
     protected HashMap<Player, ScoreboardDisplay> scoreboards;
 
     @Override
@@ -67,7 +66,7 @@ public class GBehaveSumoBase extends GameBehavior {
         this.bartimerSubTextColour = TextFormat.DARK_AQUA;
         this.bartimerColour = BlockColor.BLUE_BLOCK_COLOR;
 
-        this.mainboard = ScoreboardAPI.createScoreboard();
+        Scoreboard mainboard = ScoreboardAPI.createScoreboard();
         this.scoreboards = new HashMap<>();
 
         String timebarText = getTimerbarText();
