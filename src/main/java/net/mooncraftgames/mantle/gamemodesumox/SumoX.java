@@ -28,9 +28,21 @@ public class SumoX extends PluginBase {
                 .setMinimumPlayers(2)
                 .setGuidelinePlayers(2)
                 .setMaximumPlayers(4);
-        GameID sumoID = new GameID("sumox_brawl", "sumobrawl", "Sumo X Brawl", "The all new Sumo! Slap up to 4 players off the platform till they run out of lives! The last standing wins each round!", "sumox", new String[]{"sumo", "sumox"}, 2, sumoBrawlProperties, GBehaveSumoBase.class);
+        GameProperties sumoMegaProperties = new GameProperties(GameHandler.AutomaticWinPolicy.MANUAL_CALLS_ONLY)
+                .setCanPlayersMoveDuringCountdown(false)
+                .setCanWorldBeManipulated(false)
+                .setDefaultCountdownLength(10)
+                .setMinimumPlayers(4)
+                .setGuidelinePlayers(8)
+                .setMaximumPlayers(32);
 
-        GameRegistry.get().registerGame(sumoID);
+        GameID sumoBrawlID = new GameID("sumox_brawl", "sumobrawl", "Sumo X Brawl", "The all new Sumo! Slap up to 4 players off the platform till they run out of lives! The last standing wins each round!", "sumox", new String[]{"sumo", "sumox"}, 2, sumoBrawlProperties, GBehaveSumoBase.class);
+        GameID sumoMegaID = new GameID("sumox_mega", "sumomega", "Sumo X Mega", "The all new Sumo! Slap up to 32 players off the platform till they run out of lives! The last standing wins each round!", "sumox", new String[]{"sumo", "sumox"}, 2, sumoMegaProperties, GBehaveSumoBase.class);
+
+        GameRegistry.get()
+                .registerGame(sumoBrawlID)
+                .registerGame(sumoMegaID)
+        ;
     }
 
     public static SumoX get() { return sumoxinstance; }
