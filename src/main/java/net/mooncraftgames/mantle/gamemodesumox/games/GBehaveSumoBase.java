@@ -133,8 +133,10 @@ public class GBehaveSumoBase extends GameBehavior {
         }
         if(isPanicModeAllowed){
             if(!isInPanicMode){
-                if (roundTimer <= (maxTimer * SumoXConstants.PANIC_KNOCKBACK_MULTIPLIER)) {
+                if (roundTimer <= (maxTimer * SumoXConstants.BASE_TIMER_PANIC_ZONE)) {
                     this.isInPanicMode = true;
+
+                    for(Player player: getSessionHandler().getPlayers()) player.sendMessage(SumoXStrings.PANIC_MESSAGE);
                     getSessionHandler().getGameScheduler().registerGameTask(this::sendPanicWarning, 0);
                     getSessionHandler().getGameScheduler().registerGameTask(this::sendPanicWarning, 40);
                     getSessionHandler().getGameScheduler().registerGameTask(this::sendPanicWarning, 80);
@@ -187,7 +189,6 @@ public class GBehaveSumoBase extends GameBehavior {
     protected void sendPanicWarning(){
         for(Player player: getSessionHandler().getPlayers()){
             player.sendTitle(SumoXStrings.PANIC_TITLE, SumoXStrings.PANIC_SUBTITILE, 15, 5, 15);
-            player.sendMessage(SumoXStrings.PANIC_MESSAGE);
             player.getLevel().addSound(player.getPosition(), Sound.BEACON_POWER, 0.5f, 1.2f, player);
         }
     }
