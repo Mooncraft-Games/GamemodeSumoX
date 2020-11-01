@@ -48,7 +48,7 @@ public class GBehaveSumoBase extends GameBehavior {
         this.maxTimer = Math.max(getSessionHandler().getPrimaryMapID().getIntegers().getOrDefault(SumoXKeys.INT_TIMER, SumoXConstants.BASE_TIMER_LEGNTH), 10);
         this.roundTimer = this.maxTimer;
 
-        this.defaultTally = Math.max(getSessionHandler().getPrimaryMapID().getIntegers().getOrDefault(SumoXKeys.INT_LIVES, SumoXConstants.DEFAULT_LIVES), 1);
+        this.defaultTally = Math.min(getSessionHandler().getPrimaryMapID().getIntegers().getOrDefault(SumoXKeys.INT_LIVES, SumoXConstants.DEFAULT_LIVES), 1);
         this.lifeTally = new HashMap<>();
 
         this.bartimerBossbars = new HashMap<>();
@@ -111,7 +111,7 @@ public class GBehaveSumoBase extends GameBehavior {
             player.sendTitle(SumoXStrings.DEAD_TITLE, SumoXStrings.DEAD_SUBTITLE, 5, 50, 5);
             event.setDeathState(GamePlayerDeathEvent.DeathState.MOVE_TO_DEAD_SPECTATORS);
         } else {
-            int respawnTime = getSessionHandler().getPrimaryMapID().getIntegers().getOrDefault(SumoXKeys.INT_LIVES, SumoXConstants.DEFAULT_LIVES);
+            int respawnTime = getSessionHandler().getPrimaryMapID().getIntegers().getOrDefault(SumoXKeys.INT_RESPAWN_SECS, SumoXConstants.DEFAULT_RESPAWN_SECONDS);
             if(respawnTime < 1){
                 event.setDeathState(GamePlayerDeathEvent.DeathState.INSTANT_RESPAWN);
             } else {
