@@ -49,7 +49,7 @@ public class GBehaveSumoBase extends GameBehavior {
         this.maxTimer = Math.max(getSessionHandler().getPrimaryMapID().getIntegers().getOrDefault(SumoXKeys.INT_TIMER, SumoXConstants.BASE_TIMER_LEGNTH), 10);
         this.roundTimer = this.maxTimer;
 
-        this.defaultTally = Math.min(getSessionHandler().getPrimaryMapID().getIntegers().getOrDefault(SumoXKeys.INT_LIVES, SumoXConstants.DEFAULT_LIVES), 1);
+        this.defaultTally = Math.max(getSessionHandler().getPrimaryMapID().getIntegers().getOrDefault(SumoXKeys.INT_LIVES, SumoXConstants.DEFAULT_LIVES), 1);
         this.lifeTally = new HashMap<>();
 
         this.bartimerBossbars = new HashMap<>();
@@ -154,7 +154,7 @@ public class GBehaveSumoBase extends GameBehavior {
 
         if(isTimerBarDisplayed){
             String timebarText = getTimerbarText();
-            float timebarValue = ((float) roundTimer) / maxTimer;
+            float timebarValue = (((float) roundTimer) / maxTimer) * 100;
 
             for(DummyBossBar bossBar: bartimerBossbars.values()){
                 bossBar.setLength(timebarValue);
