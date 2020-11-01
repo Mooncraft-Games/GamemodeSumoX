@@ -128,6 +128,13 @@ public class GBehaveSumoBase extends GameBehavior {
         player.clearTitle();
     }
 
+    @Override
+    public void onAddPlayerToTeam(Player player, Team team) {
+        if(getSessionHandler().getGameState() == GameHandler.GameState.MAIN_LOOP){
+            checkMidGameWinStatus();
+        }
+    }
+
     @Override public void onGameDeathByBlock(GamePlayerDeathEvent event) { handleDeath(event); }
     @Override public void onGameDeathByEntity(GamePlayerDeathEvent event) { handleDeath(event); }
     @Override public void onGameDeathByPlayer(GamePlayerDeathEvent event) { handleDeath(event); }
@@ -187,13 +194,6 @@ public class GBehaveSumoBase extends GameBehavior {
                 bossBar.setColor(bartimerColour);
                 bossBar.reshow();
             }
-        }
-    }
-
-    @Override
-    public void onAddPlayerToTeam(Player player, Team team) {
-        if(getSessionHandler().getGameState() == GameHandler.GameState.MAIN_LOOP){
-            checkMidGameWinStatus();
         }
     }
 
