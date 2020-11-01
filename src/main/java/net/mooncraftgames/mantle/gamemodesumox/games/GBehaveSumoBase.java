@@ -222,6 +222,8 @@ public class GBehaveSumoBase extends GameBehavior {
     // Fixed to 5 slots. If updating size, account for this.
     protected void updateScoreboards(Player player){
         ScoreboardDisplay display = scoreboards.get(player);
+        display.getLineEntry().clear();
+
         display.addLine(" ", 15);
 
         ArrayList<Map.Entry<Player, Integer>> topScores = new ArrayList<>();
