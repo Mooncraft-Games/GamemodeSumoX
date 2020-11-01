@@ -277,6 +277,7 @@ public class GBehaveSumoBase extends GameBehavior {
         entryTally.add(display.addLine(String.format("%s%s...", TextFormat.GRAY, TextFormat.BOLD), 8));
         entryTally.add(display.addLine(getLivesText("You", lifeTally.get(player).toString()), 7));
         entryTally.add(display.addLine(" ", 6));
+        scoreboardEntries.put(player, entryTally);
     }
 
     protected String getTimerbarText(){
