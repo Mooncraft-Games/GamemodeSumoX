@@ -212,8 +212,6 @@ public class GBehaveSumoBase extends GameBehavior {
             }
         }
 
-        SumoX.getPlgLogger().debug("Alive: "+alivePlayers.size());
-        SumoX.getPlgLogger().debug("Pending: "+getSessionHandler().getDeathManager().getPendingRespawns().size());
         alivePlayers.addAll(getSessionHandler().getDeathManager().getPendingRespawns());
 
         if(alivePlayers.size() == 1) getSessionHandler().declareVictoryForPlayer(alivePlayers.get(0));
