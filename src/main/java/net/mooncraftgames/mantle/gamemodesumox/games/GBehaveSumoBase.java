@@ -9,10 +9,7 @@ import cn.nukkit.utils.BlockColor;
 import cn.nukkit.utils.DummyBossBar;
 import cn.nukkit.utils.TextFormat;
 import de.lucgameshd.scoreboard.api.ScoreboardAPI;
-import de.lucgameshd.scoreboard.network.DisplaySlot;
-import de.lucgameshd.scoreboard.network.Scoreboard;
-import de.lucgameshd.scoreboard.network.ScoreboardDisplay;
-import de.lucgameshd.scoreboard.network.SortOrder;
+import de.lucgameshd.scoreboard.network.*;
 import net.mooncraftgames.mantle.gamemodesumox.SumoX;
 import net.mooncraftgames.mantle.gamemodesumox.SumoXConstants;
 import net.mooncraftgames.mantle.gamemodesumox.SumoXKeys;
@@ -52,8 +49,8 @@ public class GBehaveSumoBase extends GameBehavior {
     protected TextFormat bartimerSubTextColour;
     protected BlockColor bartimerColour;
 
-    protected Scoreboard mainboard;
     protected HashMap<Player, ScoreboardDisplay> scoreboards;
+    protected HashMap<Player, ArrayList<DisplayEntry>> scoreboardEntries;
 
     @Override
     public void onInitialCountdownEnd() {
@@ -69,7 +66,7 @@ public class GBehaveSumoBase extends GameBehavior {
         this.bartimerColour = BlockColor.BLUE_BLOCK_COLOR;
 
         this.scoreboards = new HashMap<>();
-        this.mainboard = ScoreboardAPI.createScoreboard();
+        this.scoreboardEntries = new HashMap<>();
 
         String timebarText = getTimerbarText();
         for(Player player: getSessionHandler().getPlayers()){
@@ -85,6 +82,11 @@ public class GBehaveSumoBase extends GameBehavior {
             DummyBossBar oldBar = bartimerBossbars.put(player, bar);
             if(oldBar != null) oldBar.destroy();
 
+            Scoreboard s = ScoreboardAPI.createScoreboard();
+            ScoreboardDisplay display = s.addDisplay(DisplaySlot.SIDEBAR, "sumo-"+ Utility.generateUniqueToken(6, 4), String.format("%s%sSUMO %s%sBRAWL", TextFormat.GOLD, TextFormat.BOLD, TextFormat.RED, TextFormat.BOLD));
+            display.setSortOrder(SortOrder.DESCENDING);
+            scoreboards.put(player, display);
+            ScoreboardAPI.setScoreboard(player, s);
             updateScoreboards(player);
         }
     }
@@ -108,6 +110,11 @@ public class GBehaveSumoBase extends GameBehavior {
 
         lifeTally.put(player, 0);
 
+        Scoreboard s = ScoreboardAPI.createScoreboard();
+        ScoreboardDisplay display = s.addDisplay(DisplaySlot.SIDEBAR, "sumo-"+ Utility.generateUniqueToken(6, 4), String.format("%s%sSUMO %s%sBRAWL", TextFormat.GOLD, TextFormat.BOLD, TextFormat.RED, TextFormat.BOLD));
+        display.setSortOrder(SortOrder.DESCENDING);
+        scoreboards.put(player, display);
+        ScoreboardAPI.setScoreboard(player, s);
         updateScoreboards(player);
 
         return Optional.empty();
@@ -154,7 +161,7 @@ public class GBehaveSumoBase extends GameBehavior {
             }
 
             lifeTally.put(player, newVal);
-            updateScoreboards(player);
+            for(Player p : getSessionHandler().getPlayers()) updateScoreboards(p);
         }
     }
 
@@ -227,14 +234,17 @@ public class GBehaveSumoBase extends GameBehavior {
 
     // Fixed to 5 slots. If updating size, account for this.
     protected void updateScoreboards(Player player){
-        ScoreboardDisplay old = scoreboards.remove(player);
-        if(old != null) old.getScoreboard().hideFor(player);
+        ScoreboardDisplay display = scoreboards.get(player);
 
-        ScoreboardDisplay display = mainboard.addDisplay(DisplaySlot.SIDEBAR, "sumo-"+ Utility.generateUniqueToken(6, 4), String.format("%s%sSUMO %s%sBRAWL", TextFormat.GOLD, TextFormat.BOLD, TextFormat.RED, TextFormat.BOLD));
-        display.setSortOrder(SortOrder.DESCENDING);
-        scoreboards.put(player, display);
+        if(scoreboardEntries.containsKey(player)){
+            for(DisplayEntry entry: scoreboardEntries.get(player)){
+                display.removeEntry(entry);
+            }
+        }
 
-        display.addLine(" ", 15);
+        ArrayList<DisplayEntry> entryTally = new ArrayList<>();
+
+        entryTally.add(display.addLine(" ", 15));
 
         ArrayList<Map.Entry<Player, Integer>> topScores = new ArrayList<>();
 
@@ -258,17 +268,15 @@ public class GBehaveSumoBase extends GameBehavior {
         int liveListIndex = 0;
         for(int i = 14; i > 8; i--){
             if(topScores.size() > liveListIndex){
-                display.addLine(getLivesText(topScores.get(liveListIndex).getKey().getDisplayName(), topScores.get(liveListIndex).getValue().toString()), i);
+                entryTally.add(display.addLine(getLivesText(topScores.get(liveListIndex).getKey().getDisplayName(), topScores.get(liveListIndex).getValue().toString()), i));
             } else {
-                display.addLine(String.format("%s%s???", TextFormat.DARK_GRAY, TextFormat.BOLD), i);
+                entryTally.add(display.addLine(String.format("%s%s???", TextFormat.DARK_GRAY, TextFormat.BOLD), i));
             }
         }
 
-        display.addLine(String.format("%s%s...", TextFormat.GRAY, TextFormat.BOLD), 8);
-        display.addLine(getLivesText("You", "?"), 7);
-        display.addLine(" ", 6);
-        display.getScoreboard().showFor(player);
-
+        entryTally.add(display.addLine(String.format("%s%s...", TextFormat.GRAY, TextFormat.BOLD), 8));
+        entryTally.add(display.addLine(getLivesText("You", lifeTally.get(player).toString()), 7));
+        entryTally.add(display.addLine(" ", 6));
     }
 
     protected String getTimerbarText(){
