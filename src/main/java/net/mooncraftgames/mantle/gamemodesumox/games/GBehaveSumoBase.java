@@ -12,11 +12,13 @@ import net.mooncraftgames.mantle.gamemodesumox.SumoXConstants;
 import net.mooncraftgames.mantle.gamemodesumox.SumoXKeys;
 import net.mooncraftgames.mantle.gamemodesumox.SumoXStrings;
 import net.mooncraftgames.mantle.newgamesapi.game.GameBehavior;
+import net.mooncraftgames.mantle.newgamesapi.game.deaths.DeathManager;
 import net.mooncraftgames.mantle.newgamesapi.game.events.GamePlayerDeathEvent;
 import net.mooncraftgames.mantle.newgamesapi.team.DeadTeam;
 import net.mooncraftgames.mantle.newgamesapi.team.Team;
 import net.mooncraftgames.mantle.newgamesapi.team.TeamPresets;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Optional;
 
@@ -53,7 +55,6 @@ public class GBehaveSumoBase extends GameBehavior {
         this.bartimerMainTextColour = TextFormat.BLUE;
         this.bartimerSubTextColour = TextFormat.DARK_AQUA;
         this.bartimerColour = BlockColor.BLUE_BLOCK_COLOR;
-
 
         String timebarText = getTimerbarText();
         for(Player player: getSessionHandler().getPlayers()){
@@ -157,8 +158,25 @@ public class GBehaveSumoBase extends GameBehavior {
         }
     }
 
-    protected void checkMidGameWinStatus(){
+    @Override
+    public void onRemovePlayerFromTeam(Player player, Team team) {
+        // Should account for leaving game + death.
+        checkMidGameWinStatus();
+    }
 
+    protected void checkMidGameWinStatus(){
+        ArrayList<Player> alivePlayers = new ArrayList<>();
+
+        for(Team team: getSessionHandler().getTeams().values()){
+            if(team.isActiveGameTeam()){
+                alivePlayers.addAll(team.getPlayers());
+            }
+        }
+
+        alivePlayers.addAll(getSessionHandler().getDeathManager().getPendingRespawns());
+
+        if(alivePlayers.size() == 1) getSessionHandler().declareVictoryForPlayer(alivePlayers.get(0));
+        if(alivePlayers.size() < 1) getSessionHandler().declareLoss();
     }
 
     protected void declareWinByTimerEnd(){
