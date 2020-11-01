@@ -121,6 +121,10 @@ public class GBehaveSumoBase extends GameBehavior {
         if (b != null){
             b.destroy();
         }
+        ScoreboardDisplay display = scoreboards.remove(player);
+        if(display != null){
+            display.getScoreboard().hideFor(player);
+        }
         player.clearTitle();
     }
 
