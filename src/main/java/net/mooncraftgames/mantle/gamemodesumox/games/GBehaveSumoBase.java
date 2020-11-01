@@ -169,6 +169,7 @@ public class GBehaveSumoBase extends GameBehavior {
     protected void sendPanicWarning(){
         for(Player player: getSessionHandler().getPlayers()){
             player.sendTitle(SumoXStrings.PANIC_TITLE, SumoXStrings.PANIC_SUBTITILE, 15, 5, 15);
+            player.sendMessage(SumoXStrings.PANIC_MESSAGE);
             player.getLevel().addSound(player.getPosition(), Sound.BEACON_POWER, 0.5f, 1.2f, player);
         }
     }
