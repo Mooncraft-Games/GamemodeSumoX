@@ -51,6 +51,7 @@ public class GBehaveSumoBase extends GameBehavior {
     protected TextFormat bartimerSubTextColour;
     protected BlockColor bartimerColour;
 
+    protected Scoreboard mainboard;
     protected HashMap<Player, ScoreboardDisplay> scoreboards;
 
     @Override
@@ -66,6 +67,9 @@ public class GBehaveSumoBase extends GameBehavior {
         this.bartimerSubTextColour = TextFormat.DARK_AQUA;
         this.bartimerColour = BlockColor.BLUE_BLOCK_COLOR;
 
+        this.mainboard = ScoreboardAPI.createScoreboard();
+        this.scoreboards = new HashMap<>();
+
         String timebarText = getTimerbarText();
         for(Player player: getSessionHandler().getPlayers()){
             DummyBossBar bar = new DummyBossBar.Builder(player)
@@ -80,8 +84,7 @@ public class GBehaveSumoBase extends GameBehavior {
 
             lifeTally.put(player, defaultTally);
 
-            Scoreboard playerBoard = ScoreboardAPI.createScoreboard();
-            ScoreboardDisplay display = playerBoard.addDisplay(DisplaySlot.SIDEBAR, "sumo-"+ Utility.generateUniqueToken(6, 4), String.format("%s%sSUMO %s%sBRAWL", TextFormat.GOLD, TextFormat.BOLD, TextFormat.RED, TextFormat.BOLD));
+            ScoreboardDisplay display = mainboard.addDisplay(DisplaySlot.SIDEBAR, "sumo-"+ Utility.generateUniqueToken(6, 4), String.format("%s%sSUMO %s%sBRAWL", TextFormat.GOLD, TextFormat.BOLD, TextFormat.RED, TextFormat.BOLD));
             scoreboards.put(player, display);
         }
     }
