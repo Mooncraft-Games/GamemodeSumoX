@@ -12,6 +12,7 @@ import de.lucgameshd.scoreboard.api.ScoreboardAPI;
 import de.lucgameshd.scoreboard.network.DisplaySlot;
 import de.lucgameshd.scoreboard.network.Scoreboard;
 import de.lucgameshd.scoreboard.network.ScoreboardDisplay;
+import de.lucgameshd.scoreboard.network.SortOrder;
 import net.mooncraftgames.mantle.gamemodesumox.SumoX;
 import net.mooncraftgames.mantle.gamemodesumox.SumoXConstants;
 import net.mooncraftgames.mantle.gamemodesumox.SumoXKeys;
@@ -51,6 +52,7 @@ public class GBehaveSumoBase extends GameBehavior {
     protected TextFormat bartimerSubTextColour;
     protected BlockColor bartimerColour;
 
+    protected Scoreboard mainboard;
     protected HashMap<Player, ScoreboardDisplay> scoreboards;
 
     @Override
@@ -66,8 +68,8 @@ public class GBehaveSumoBase extends GameBehavior {
         this.bartimerSubTextColour = TextFormat.DARK_AQUA;
         this.bartimerColour = BlockColor.BLUE_BLOCK_COLOR;
 
-        Scoreboard mainboard = ScoreboardAPI.createScoreboard();
         this.scoreboards = new HashMap<>();
+        this.mainboard = ScoreboardAPI.createScoreboard();
 
         String timebarText = getTimerbarText();
         for(Player player: getSessionHandler().getPlayers()){
@@ -83,8 +85,6 @@ public class GBehaveSumoBase extends GameBehavior {
             DummyBossBar oldBar = bartimerBossbars.put(player, bar);
             if(oldBar != null) oldBar.destroy();
 
-            ScoreboardDisplay display = mainboard.addDisplay(DisplaySlot.SIDEBAR, "sumo-"+ Utility.generateUniqueToken(6, 4), String.format("%s%sSUMO %s%sBRAWL", TextFormat.GOLD, TextFormat.BOLD, TextFormat.RED, TextFormat.BOLD));
-            scoreboards.put(player, display);
             updateScoreboards(player);
         }
     }
@@ -108,9 +108,6 @@ public class GBehaveSumoBase extends GameBehavior {
 
         lifeTally.put(player, 0);
 
-        Scoreboard playerBoard = ScoreboardAPI.createScoreboard();
-        ScoreboardDisplay display = playerBoard.addDisplay(DisplaySlot.SIDEBAR, "sumo-"+ Utility.generateUniqueToken(6, 4), String.format("%s%sSUMO %s%sBRAWL", TextFormat.GOLD, TextFormat.BOLD, TextFormat.RED, TextFormat.BOLD));
-        scoreboards.put(player, display);
         updateScoreboards(player);
 
         return Optional.empty();
@@ -230,8 +227,12 @@ public class GBehaveSumoBase extends GameBehavior {
 
     // Fixed to 5 slots. If updating size, account for this.
     protected void updateScoreboards(Player player){
-        ScoreboardDisplay display = scoreboards.get(player);
-        display.getLineEntry().clear();
+        ScoreboardDisplay old = scoreboards.remove(player);
+        if(old != null) old.getScoreboard().hideFor(player);
+
+        ScoreboardDisplay display = mainboard.addDisplay(DisplaySlot.SIDEBAR, "sumo-"+ Utility.generateUniqueToken(6, 4), String.format("%s%sSUMO %s%sBRAWL", TextFormat.GOLD, TextFormat.BOLD, TextFormat.RED, TextFormat.BOLD));
+        display.setSortOrder(SortOrder.DESCENDING);
+        scoreboards.put(player, display);
 
         display.addLine(" ", 15);
 
