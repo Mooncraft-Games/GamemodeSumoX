@@ -8,7 +8,7 @@ public final class SumoXConstants {
     public static final float BASE_TIMER_PANIC_ZONE = 1f / 3;
 
     /** The base knockback value. */
-    public static final float KNOCKBACK_BASE = 0.4f;
+    public static final float KNOCKBACK_BASE = 0.6f;
 
     /** base * (1.05^finals_time) = compound 5% boost every second. */
     public static final float PANIC_KNOCKBACK_MULTIPLIER = 1.05f;
