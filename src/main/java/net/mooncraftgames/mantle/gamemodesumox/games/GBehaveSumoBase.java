@@ -8,10 +8,15 @@ import cn.nukkit.level.Sound;
 import cn.nukkit.utils.BlockColor;
 import cn.nukkit.utils.DummyBossBar;
 import cn.nukkit.utils.TextFormat;
+import de.lucgameshd.scoreboard.api.ScoreboardAPI;
+import de.lucgameshd.scoreboard.network.DisplaySlot;
+import de.lucgameshd.scoreboard.network.Scoreboard;
+import de.lucgameshd.scoreboard.network.ScoreboardDisplay;
 import net.mooncraftgames.mantle.gamemodesumox.SumoX;
 import net.mooncraftgames.mantle.gamemodesumox.SumoXConstants;
 import net.mooncraftgames.mantle.gamemodesumox.SumoXKeys;
 import net.mooncraftgames.mantle.gamemodesumox.SumoXStrings;
+import net.mooncraftgames.mantle.newgamesapi.Utility;
 import net.mooncraftgames.mantle.newgamesapi.game.GameBehavior;
 import net.mooncraftgames.mantle.newgamesapi.game.GameHandler;
 import net.mooncraftgames.mantle.newgamesapi.game.deaths.DeathManager;
@@ -45,6 +50,8 @@ public class GBehaveSumoBase extends GameBehavior {
     protected TextFormat bartimerSubTextColour;
     protected BlockColor bartimerColour;
 
+    protected HashMap<Player, ScoreboardDisplay> scoreboards;
+
     @Override
     public void onInitialCountdownEnd() {
         this.maxTimer = Math.max(getSessionHandler().getPrimaryMapID().getIntegers().getOrDefault(SumoXKeys.INT_TIMER, SumoXConstants.BASE_TIMER_LEGNTH), 10);
@@ -71,6 +78,10 @@ public class GBehaveSumoBase extends GameBehavior {
             if(oldBar != null) oldBar.destroy();
 
             lifeTally.put(player, defaultTally);
+
+            Scoreboard playerBoard = ScoreboardAPI.createScoreboard();
+            ScoreboardDisplay display = playerBoard.addDisplay(DisplaySlot.SIDEBAR, "sumo-"+ Utility.generateUniqueToken(6, 4), String.format("%s%sSUMO %s%sBRAWL", TextFormat.GOLD, TextFormat.BOLD, TextFormat.RED, TextFormat.BOLD));
+            scoreboards.put(player, display);
         }
     }
 
@@ -91,6 +102,11 @@ public class GBehaveSumoBase extends GameBehavior {
             bartimerBossbars.put(player, bar);
         }, 1, 0);
 
+        lifeTally.put(player, 0);
+
+        Scoreboard playerBoard = ScoreboardAPI.createScoreboard();
+        ScoreboardDisplay display = playerBoard.addDisplay(DisplaySlot.SIDEBAR, "sumo-"+ Utility.generateUniqueToken(6, 4), String.format("%s%sSUMO %s%sBRAWL", TextFormat.GOLD, TextFormat.BOLD, TextFormat.RED, TextFormat.BOLD));
+        scoreboards.put(player, display);
 
         return Optional.empty();
     }
@@ -202,8 +218,26 @@ public class GBehaveSumoBase extends GameBehavior {
         }
     }
 
+    protected void updateScoreboards(Player player){
+        ScoreboardDisplay display = scoreboards.get(player);
+        display.addLine(" ", 15);
+
+
+        for(int i = 14; i > 8; i--) display.addLine(" ", i);
+
+        display.addLine(String.format("%s%s...", TextFormat.GRAY, TextFormat.BOLD), 8);
+        display.addLine(getLivesText("You", "?"), 7);
+        display.addLine(" ", 6);
+        display.getScoreboard().showFor(player);
+
+    }
+
     protected String getTimerbarText(){
         return String.format("\n\n%s%sTime Remaining: %s%s%s", bartimerMainTextColour, TextFormat.BOLD, bartimerSubTextColour, TextFormat.BOLD, roundTimer);
+    }
+
+    protected String getLivesText(String name, String lives){
+        return String.format("%s%s%s: %s%s%s %s%sLives", TextFormat.GOLD, TextFormat.BOLD, name, TextFormat.RED, TextFormat.BOLD, lives, TextFormat.DARK_RED, TextFormat.BOLD);
     }
 
     public int getTimeElapsed() {
