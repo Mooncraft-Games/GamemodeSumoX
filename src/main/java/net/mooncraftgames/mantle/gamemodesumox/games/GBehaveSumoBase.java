@@ -27,6 +27,7 @@ import net.mooncraftgames.mantle.newgamesapi.team.TeamPresets;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 public class GBehaveSumoBase extends GameBehavior {
@@ -218,12 +219,38 @@ public class GBehaveSumoBase extends GameBehavior {
         }
     }
 
+    // Fixed to 5 slots. If updating size, account for this.
     protected void updateScoreboards(Player player){
         ScoreboardDisplay display = scoreboards.get(player);
         display.addLine(" ", 15);
 
+        ArrayList<Map.Entry<Player, Integer>> topScores = new ArrayList<>();
 
-        for(int i = 14; i > 8; i--) display.addLine(" ", i);
+        for(Map.Entry<Player, Integer> e: lifeTally.entrySet()){
+            if(e.getValue() < 1){
+                continue;
+            }
+            boolean isAdded = false;
+            for(int i = 0; i < topScores.size(); i++){
+                if(topScores.get(i).getValue() <= e.getValue()){
+                    topScores.add(i, e);
+                    isAdded = true;
+                    break;
+                }
+            }
+            if(!isAdded){
+                topScores.add(e);
+            }
+        }
+
+        int liveListIndex = 0;
+        for(int i = 14; i > 8; i--){
+            if(topScores.size() > liveListIndex){
+                display.addLine(getLivesText(topScores.get(liveListIndex).getKey().getDisplayName(), topScores.get(liveListIndex).getValue().toString()), i);
+            } else {
+                display.addLine(String.format("%s%s???", TextFormat.DARK_GRAY, TextFormat.BOLD), i);
+            }
+        }
 
         display.addLine(String.format("%s%s...", TextFormat.GRAY, TextFormat.BOLD), 8);
         display.addLine(getLivesText("You", "?"), 7);
