@@ -79,13 +79,16 @@ public class GBehaveSumoBase extends GameBehavior {
 
     @Override
     public Optional<Team> onMidGameJoinEvent(Player player) {
-        DummyBossBar bar = new DummyBossBar.Builder(player)
-                .color(bartimerColour)
-                .length(100)
-                .text(getTimerbarText())
-                .build();
-        player.createBossBar(bar);
-        bartimerBossbars.put(player, bar);
+        getSessionHandler().getGameScheduler().registerGameTask(() -> {
+            DummyBossBar bar = new DummyBossBar.Builder(player)
+                    .color(bartimerColour)
+                    .length(100)
+                    .text(getTimerbarText())
+                    .build();
+            player.createBossBar(bar);
+            bartimerBossbars.put(player, bar);
+        }, 1, 0);
+
 
         return Optional.empty();
     }
@@ -156,6 +159,7 @@ public class GBehaveSumoBase extends GameBehavior {
                 bossBar.setLength(timebarValue);
                 bossBar.setText(timebarText);
                 bossBar.setColor(bartimerColour);
+                bossBar.reshow();
             }
         }
     }
