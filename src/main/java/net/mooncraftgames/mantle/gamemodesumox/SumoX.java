@@ -21,14 +21,14 @@ public class SumoX extends PluginBase {
 
         KitRegistry.get().registerKitGroup(new KitGroup("sumox", new KitSlapper()));
 
-        GameProperties sumoProperties = new GameProperties(GameHandler.AutomaticWinPolicy.MANUAL_CALLS_ONLY)
+        GameProperties sumoBrawlProperties = new GameProperties(GameHandler.AutomaticWinPolicy.MANUAL_CALLS_ONLY)
                 .setCanPlayersMoveDuringCountdown(false)
                 .setCanWorldBeManipulated(false)
                 .setDefaultCountdownLength(10)
                 .setMinimumPlayers(2)
-                .setGuidelinePlayers(6)
-                .setMaximumPlayers(16);
-        GameID sumoID = new GameID("sumox", "sumox", "Sumo X", "The all new Sumo! Slap players off the platform till they run out of lives! The last standing wins each round!", "sumox", new String[]{"sumo", "sumox"}, 2, sumoProperties, GBehaveSumoBase.class);
+                .setGuidelinePlayers(2)
+                .setMaximumPlayers(4);
+        GameID sumoID = new GameID("sumox_brawl", "sumobrawl", "Sumo X Brawl", "The all new Sumo! Slap up to 4 players off the platform till they run out of lives! The last standing wins each round!", "sumox", new String[]{"sumo", "sumox"}, 2, sumoBrawlProperties, GBehaveSumoBase.class);
 
         GameRegistry.get().registerGame(sumoID);
     }
