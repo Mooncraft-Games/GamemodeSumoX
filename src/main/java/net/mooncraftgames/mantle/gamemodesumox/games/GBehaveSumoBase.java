@@ -71,6 +71,8 @@ public class GBehaveSumoBase extends GameBehavior {
 
         String timebarText = getTimerbarText();
         for(Player player: getSessionHandler().getPlayers()){
+            lifeTally.put(player, defaultTally);
+
             DummyBossBar bar = new DummyBossBar.Builder(player)
                     .color(bartimerColour)
                     .length(100)
@@ -81,10 +83,9 @@ public class GBehaveSumoBase extends GameBehavior {
             DummyBossBar oldBar = bartimerBossbars.put(player, bar);
             if(oldBar != null) oldBar.destroy();
 
-            lifeTally.put(player, defaultTally);
-
             ScoreboardDisplay display = mainboard.addDisplay(DisplaySlot.SIDEBAR, "sumo-"+ Utility.generateUniqueToken(6, 4), String.format("%s%sSUMO %s%sBRAWL", TextFormat.GOLD, TextFormat.BOLD, TextFormat.RED, TextFormat.BOLD));
             scoreboards.put(player, display);
+            updateScoreboards(player);
         }
     }
 
@@ -110,6 +111,7 @@ public class GBehaveSumoBase extends GameBehavior {
         Scoreboard playerBoard = ScoreboardAPI.createScoreboard();
         ScoreboardDisplay display = playerBoard.addDisplay(DisplaySlot.SIDEBAR, "sumo-"+ Utility.generateUniqueToken(6, 4), String.format("%s%sSUMO %s%sBRAWL", TextFormat.GOLD, TextFormat.BOLD, TextFormat.RED, TextFormat.BOLD));
         scoreboards.put(player, display);
+        updateScoreboards(player);
 
         return Optional.empty();
     }
@@ -155,6 +157,7 @@ public class GBehaveSumoBase extends GameBehavior {
             }
 
             lifeTally.put(player, newVal);
+            updateScoreboards(player);
         }
     }
 
