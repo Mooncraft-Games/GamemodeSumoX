@@ -4,6 +4,7 @@ public final class SumoXConstants {
 
     /** 3 minutes base.*/
     public static final int BASE_TIMER_LEGNTH = 180;
+
     /** The proportion of the game that should have enhanced */
     public static final float BASE_TIMER_PANIC_ZONE = 1f / 3;
 
@@ -18,6 +19,12 @@ public final class SumoXConstants {
 
     /** Lives before a player cannot respawn. */
     public static final int DEFAULT_LIVES = 3;
+
+    /** The minimum amount of time between power up spawns. */
+    public static final int DEFAULT_MIN_POWERUP_SPAWN_TIME = 20;
+
+    /** The amount of extra time that can be added on between powerup spawns. */
+    public static final int DEFAULT_VARIATION_POWERUP_SPAWN_TIME = 20;
 
 
     // -- ANTI-CAMP --

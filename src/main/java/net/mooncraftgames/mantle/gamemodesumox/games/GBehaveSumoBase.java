@@ -14,14 +14,12 @@ import net.mooncraftgames.mantle.gamemodesumox.SumoX;
 import net.mooncraftgames.mantle.gamemodesumox.SumoXConstants;
 import net.mooncraftgames.mantle.gamemodesumox.SumoXKeys;
 import net.mooncraftgames.mantle.gamemodesumox.SumoXStrings;
+import net.mooncraftgames.mantle.gamemodesumox.games.pointentities.PETypeSumoXPowerUpSpot;
 import net.mooncraftgames.mantle.newgamesapi.Utility;
 import net.mooncraftgames.mantle.newgamesapi.game.GameBehavior;
 import net.mooncraftgames.mantle.newgamesapi.game.GameHandler;
-import net.mooncraftgames.mantle.newgamesapi.game.deaths.DeathManager;
 import net.mooncraftgames.mantle.newgamesapi.game.events.GamePlayerDeathEvent;
-import net.mooncraftgames.mantle.newgamesapi.team.DeadTeam;
 import net.mooncraftgames.mantle.newgamesapi.team.Team;
-import net.mooncraftgames.mantle.newgamesapi.team.TeamPresets;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,12 +32,17 @@ public class GBehaveSumoBase extends GameBehavior {
     protected boolean isTimerEnabled = true;
     protected boolean isTimerBarDisplayed = true;
     protected boolean isPanicModeAllowed = true;
+    protected boolean arePowerUpsAllowed = true;
 
     // Game Values
     protected int maxTimer = -1;
     protected int roundTimer = -1;
 
     protected boolean isInPanicMode = false;
+
+    protected int minimumPowerUpSpawnTime;
+    protected int variationPowerUpSpawnTime;
+    protected HashMap<String, Integer> powerUpPointCooldowns;
 
     protected int defaultTally;
     protected HashMap<Player, Integer> lifeTally;
@@ -53,9 +56,19 @@ public class GBehaveSumoBase extends GameBehavior {
     protected HashMap<Player, ArrayList<DisplayEntry>> scoreboardEntries;
 
     @Override
+    public int onGameBegin() {
+        getSessionHandler().getPointEntityTypeManager().registerPointEntityType(new PETypeSumoXPowerUpSpot(getSessionHandler()));
+        return 5;
+    }
+
+    @Override
     public void onInitialCountdownEnd() {
         this.maxTimer = Math.max(getSessionHandler().getPrimaryMapID().getIntegers().getOrDefault(SumoXKeys.INT_TIMER, SumoXConstants.BASE_TIMER_LEGNTH), 10);
         this.roundTimer = this.maxTimer;
+
+        this.minimumPowerUpSpawnTime = Math.max(getSessionHandler().getPrimaryMapID().getIntegers().getOrDefault(SumoXKeys.INT_MIN_POWERUP_SPAWN_TIME, SumoXConstants.DEFAULT_MIN_POWERUP_SPAWN_TIME), 5);
+        this.variationPowerUpSpawnTime = Math.max(getSessionHandler().getPrimaryMapID().getIntegers().getOrDefault(SumoXKeys.INT_VARY_POWERUP_SPAWN_TIME, SumoXConstants.DEFAULT_VARIATION_POWERUP_SPAWN_TIME), 0) + 1;
+        this.powerUpPointCooldowns = new HashMap<>();
 
         this.defaultTally = Math.max(getSessionHandler().getPrimaryMapID().getIntegers().getOrDefault(SumoXKeys.INT_LIVES, SumoXConstants.DEFAULT_LIVES), 1);
         this.lifeTally = new HashMap<>();
@@ -173,6 +186,7 @@ public class GBehaveSumoBase extends GameBehavior {
                 declareWinByTimerEnd();
             }
         }
+
         if(isPanicModeAllowed){
             if(!isInPanicMode){
                 if (roundTimer <= (maxTimer * SumoXConstants.BASE_TIMER_PANIC_ZONE)) {
@@ -295,8 +309,16 @@ public class GBehaveSumoBase extends GameBehavior {
         return sb.toString();
     }
 
-    public int getTimeElapsed() {
-        return maxTimer-roundTimer;
+    public int getTimeElapsed() { return maxTimer-roundTimer; }
+    public boolean isTimerEnabled() { return isTimerEnabled; }
+    public boolean isTimerBarDisplayed() { return isTimerBarDisplayed; }
+    public boolean isPanicModeAllowed() { return isPanicModeAllowed; }
+    public boolean arePowerUpsAllowed() { return arePowerUpsAllowed; }
+
+    public int getMinimumPowerUpSpawnTime() { return minimumPowerUpSpawnTime; }
+    public int getVariationPowerUpSpawnTime() { return variationPowerUpSpawnTime; }
+    public HashMap<String, Integer> getPowerUpPointCooldowns() {
+        return powerUpPointCooldowns;
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
