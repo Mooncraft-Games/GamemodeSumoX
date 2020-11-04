@@ -39,7 +39,7 @@ public class PETypeSumoXPowerUpSpot extends PointEntityType {
         } else {
             if(!triggeredMisuseWarning) {
                 this.triggeredMisuseWarning = true;
-                SumoX.getPlgLogger().error("Misused powerup. Wrong Gamemode!");
+                SumoX.getPlgLogger().error("Misused powerup. Wrong Gamemode! //JellyBaboon was here.");
             }
         }
     }
