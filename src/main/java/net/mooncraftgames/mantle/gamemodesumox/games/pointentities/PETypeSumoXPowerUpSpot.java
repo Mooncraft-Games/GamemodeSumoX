@@ -37,8 +37,10 @@ public class PETypeSumoXPowerUpSpot extends PointEntityType {
 
     protected void spawnPowerUp(PointEntityCallData data){
         if(getGameHandler().getGameBehaviors() instanceof GBehaveSumoBase) {
+
             GBehaveSumoBase behaviours = (GBehaveSumoBase) getGameHandler().getGameBehaviors();
             PointEntity pe = data.getPointEntity();
+
             if(behaviours.getPowerUpPointCooldowns().containsKey(pe.getId())){
                 int time = behaviours.getPowerUpPointCooldowns().get(pe.getId());
                 if(time < 0){
@@ -51,7 +53,7 @@ public class PETypeSumoXPowerUpSpot extends PointEntityType {
                 behaviours.getPowerUpPointCooldowns().put(pe.getId(), time);
                 if (time == 0){
                     // Spawn Power up
-                    spawnPowerUpEntity(pe);
+                    spawnPowerUpEntity(pe).spawnToAll();
                 }
             } else {
                 Random r = new Random();
