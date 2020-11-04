@@ -11,4 +11,6 @@ public class SumoXStrings {
 
     public static final String DEAD_TITLE = String.format("%s%sDEAD", TextFormat.DARK_GRAY, TextFormat.BOLD);
     public static final String DEAD_SUBTITLE = String.format("%sYou ran out of lives! :(", TextFormat.GRAY);
+
+    public static final String POWERUP_ENTITY_NAME = String.format("%s%s^ POWER UP ^\n%s%s(In A Suit)", TextFormat.YELLOW, TextFormat.BOLD, TextFormat.BLUE, TextFormat.GOLD);
 }
