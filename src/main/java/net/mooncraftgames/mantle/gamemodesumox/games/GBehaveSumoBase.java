@@ -215,6 +215,10 @@ public class GBehaveSumoBase extends GameBehavior {
                 bossBar.reshow();
             }
         }
+
+        if(arePowerUpsAllowed){
+            getSessionHandler().getPointEntityTypeManager().getRegisteredTypes().get(SumoXKeys.PE_TYPE_POWERUP).executeFunctionForAll(SumoXKeys.PE_FUNC_POWERUP_SPAWN, new HashMap<>());
+        }
     }
 
     protected void checkMidGameWinStatus(){

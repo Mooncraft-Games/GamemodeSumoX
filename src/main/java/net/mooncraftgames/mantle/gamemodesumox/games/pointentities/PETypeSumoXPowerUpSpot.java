@@ -38,27 +38,25 @@ public class PETypeSumoXPowerUpSpot extends PointEntityType {
     protected void spawnPowerUp(PointEntityCallData data){
         if(getGameHandler().getGameBehaviors() instanceof GBehaveSumoBase) {
             GBehaveSumoBase behaviours = (GBehaveSumoBase) getGameHandler().getGameBehaviors();
-            if (behaviours.arePowerUpsAllowed()) {
-                PointEntity pe = data.getPointEntity();
-                if(behaviours.getPowerUpPointCooldowns().containsKey(pe.getId())){
-                    int time = behaviours.getPowerUpPointCooldowns().get(pe.getId());
-                    if(time < 0){
-                        // Power up still spawned. Keep there.
-                        return;
-                    }
-
-                    // Decrement Timer
-                    time--;
-                    behaviours.getPowerUpPointCooldowns().put(pe.getId(), time);
-                    if (time == 0){
-                        // Spawn Power up
-                        spawnPowerUpEntity(pe);
-                    }
-                } else {
-                    Random r = new Random();
-                    int calcTime = behaviours.getMinimumPowerUpSpawnTime() + r.nextInt(behaviours.getVariationPowerUpSpawnTime());
-                    behaviours.getPowerUpPointCooldowns().put(pe.getId(), calcTime);
+            PointEntity pe = data.getPointEntity();
+            if(behaviours.getPowerUpPointCooldowns().containsKey(pe.getId())){
+                int time = behaviours.getPowerUpPointCooldowns().get(pe.getId());
+                if(time < 0){
+                    // Power up still spawned. Keep there.
+                    return;
                 }
+
+                // Decrement Timer
+                time--;
+                behaviours.getPowerUpPointCooldowns().put(pe.getId(), time);
+                if (time == 0){
+                    // Spawn Power up
+                    spawnPowerUpEntity(pe);
+                }
+            } else {
+                Random r = new Random();
+                int calcTime = behaviours.getMinimumPowerUpSpawnTime() + r.nextInt(behaviours.getVariationPowerUpSpawnTime());
+                behaviours.getPowerUpPointCooldowns().put(pe.getId(), calcTime);
             }
         } else {
             if(!triggeredMisuseWarning) {
