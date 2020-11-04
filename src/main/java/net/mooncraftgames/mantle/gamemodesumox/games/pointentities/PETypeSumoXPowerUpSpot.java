@@ -52,7 +52,7 @@ public class PETypeSumoXPowerUpSpot extends PointEntityType {
                     behaviours.getPowerUpPointCooldowns().put(pe.getId(), time);
                     if (time == 0){
                         // Spawn Power up
-
+                        spawnPowerUpEntity(pe);
                     }
                 } else {
                     Random r = new Random();
@@ -88,6 +88,7 @@ public class PETypeSumoXPowerUpSpot extends PointEntityType {
                         .add(new FloatTag("", (float) rotation.getY()))
                         .add(new FloatTag("", (float) rotation.getX())))
                 .putBoolean("npc", true)
+                .putString(SumoXKeys.NBT_POWERUP_PE_TIE, pe.getId())
                 .putFloat("scale", 2);
 
         EntityGuardian guardian = new EntityGuardian(chunk, nbt);
