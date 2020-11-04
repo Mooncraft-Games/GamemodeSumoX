@@ -1,5 +1,13 @@
 package net.mooncraftgames.mantle.gamemodesumox;
 
+import net.mooncraftgames.mantle.gamemodesumox.powerup.PowerUp;
+import net.mooncraftgames.mantle.gamemodesumox.powerup.PowerUpBlindness;
+import net.mooncraftgames.mantle.gamemodesumox.powerup.PowerUpImmunity;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public final class SumoXConstants {
 
     /** 3 minutes base.*/
@@ -39,5 +47,17 @@ public final class SumoXConstants {
     public static final int UNTOUCHED_TRIP_THRESHOLD = 40;
     /** A*/
     public static final float UNTOUCHED_TRIP_FINAL_MULTIPLIER = 0.5f;
+
+    public static final List<Class<? extends PowerUp>> AVAILABLE_POWER_UPS;
+
+
+    static {
+        ArrayList<Class<? extends PowerUp>> puss = new ArrayList<>();
+
+        puss.add(PowerUpBlindness.class);
+        puss.add(PowerUpImmunity.class);
+
+        AVAILABLE_POWER_UPS = Collections.unmodifiableList(puss);
+    }
 
 }
