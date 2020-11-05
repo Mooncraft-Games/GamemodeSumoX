@@ -53,7 +53,7 @@ public class PETypeSumoXPowerUpSpot extends PointEntityType implements Listener 
         for(int i = 0; i < SumoXConstants.AVAILABLE_POWER_UPS.size(); i++){
             try {
                 Class<? extends PowerUp> c = SumoXConstants.AVAILABLE_POWER_UPS.get(i);
-                PowerUp powerUp = c.newInstance();
+                PowerUp powerUp = c.getConstructor(GameHandler.class).newInstance(gameHandler);
                 powerUpPool[i] = powerUp;
                 maxWeight += Math.max(powerUp.getWeight(), 1);
             } catch (Exception err){
