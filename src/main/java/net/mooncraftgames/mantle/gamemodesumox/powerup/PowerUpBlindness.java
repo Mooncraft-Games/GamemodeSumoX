@@ -22,7 +22,7 @@ public class PowerUpBlindness extends PowerUp{
 
     @Override
     public String getUsage() {
-        return "You are now blind for 7 seconds. :)";
+        return "You are now blind for 10 seconds. :)";
     }
 
     @Override
@@ -47,7 +47,7 @@ public class PowerUpBlindness extends PowerUp{
 
     @Override
     public boolean use(PowerUpContext context) {
-        context.getPlayer().addEffect(Effect.getEffect(Effect.BLINDNESS).setDuration(20*7));
+        context.getPlayer().addEffect(Effect.getEffect(Effect.BLINDNESS).setDuration(20*10));
         return true;
     }
 
