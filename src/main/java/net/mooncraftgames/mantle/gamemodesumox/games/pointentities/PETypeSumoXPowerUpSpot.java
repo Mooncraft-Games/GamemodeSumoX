@@ -142,7 +142,6 @@ public class PETypeSumoXPowerUpSpot extends PointEntityType implements Listener 
         return behaviours.getMinimumPowerUpSpawnTime() + r.nextInt(behaviours.getVariationPowerUpSpawnTime());
     }
 
-    @EventHandler
     protected boolean runPowerUp(PowerUp powerUp, PowerUpContext context){
         if(powerUp.isConsumedImmediatley()){
             boolean result = powerUp.use(context);
