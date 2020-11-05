@@ -175,6 +175,7 @@ public class PETypeSumoXPowerUpSpot extends PointEntityType implements Listener 
                     String s = event.getEntity().namedTag.getString(SumoXKeys.NBT_POWERUP_PE_TIE);
                     if(s != null){
                         if(getGameHandler().getGameBehaviors() instanceof GBehaveSumoBase) {
+                            event.setCancelled(true);
                             int selection = new Random().nextInt(maxWeight);
                             int cumulativeWeightChecked = 1;
                             for(PowerUp entry: powerUpPool){
