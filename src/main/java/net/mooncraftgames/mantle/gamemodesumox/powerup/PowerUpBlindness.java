@@ -47,7 +47,7 @@ public class PowerUpBlindness extends PowerUp{
 
     @Override
     public boolean use(PowerUpContext context) {
-        context.getPlayer().addEffect(Effect.getEffect(Effect.BLINDNESS).setDuration(7));
+        context.getPlayer().addEffect(Effect.getEffect(Effect.BLINDNESS).setDuration(20*7));
         return true;
     }
 
