@@ -180,13 +180,14 @@ public class PETypeSumoXPowerUpSpot extends PointEntityType implements Listener 
                             int cumulativeWeightChecked = 1;
                             for(PowerUp entry: powerUpPool){
                                 if(selection <= (cumulativeWeightChecked + entry.getWeight())){
-                                    runPowerUp(entry, new PowerUpContext(attacker));
+                                    if(runPowerUp(entry, new PowerUpContext(attacker))){
+                                        event.getEntity().close();
+                                        GBehaveSumoBase behaviours = (GBehaveSumoBase) getGameHandler().getGameBehaviors();
+                                        behaviours.getPowerUpPointCooldowns().put(s, generateNewTime(behaviours));
+                                    }
                                 }
                                 cumulativeWeightChecked += entry.getWeight();
                             }
-
-                            GBehaveSumoBase behaviours = (GBehaveSumoBase) getGameHandler().getGameBehaviors();
-                            behaviours.getPowerUpPointCooldowns().put(s, generateNewTime(behaviours));
                         }
                     }
                 }
