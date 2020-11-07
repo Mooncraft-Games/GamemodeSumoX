@@ -12,14 +12,12 @@ import cn.nukkit.level.Level;
 import cn.nukkit.level.ParticleEffect;
 import cn.nukkit.level.Sound;
 import cn.nukkit.level.format.FullChunk;
-import cn.nukkit.level.particle.Particle;
 import cn.nukkit.math.Vector2;
 import cn.nukkit.math.Vector3;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.nbt.tag.DoubleTag;
 import cn.nukkit.nbt.tag.FloatTag;
 import cn.nukkit.nbt.tag.ListTag;
-import dev.cg360.mc.nukkittables.types.entry.TableEntry;
 import net.mooncraftgames.mantle.gamemodesumox.SumoX;
 import net.mooncraftgames.mantle.gamemodesumox.SumoXConstants;
 import net.mooncraftgames.mantle.gamemodesumox.SumoXKeys;
@@ -34,7 +32,6 @@ import net.mooncraftgames.mantle.newgamesapi.map.types.PointEntity;
 
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.UUID;
 
 public class PETypeSumoXPowerUpSpot extends PointEntityType implements Listener {
 
@@ -50,6 +47,8 @@ public class PETypeSumoXPowerUpSpot extends PointEntityType implements Listener 
 
         this.maxWeight = 0;
         this.powerUpPool = new PowerUp[0];
+
+        this.powerUpEntities = new ArrayList<>();
     }
 
     @Override
