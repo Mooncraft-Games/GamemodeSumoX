@@ -43,7 +43,7 @@ public final class PowerUpImmunity extends PowerUp implements Listener {
 
     @Override
     public Sound useSound() {
-        return Sound.BLOCK_END_PORTAL_SPAWN;
+        return Sound.HIT_ANVIL;
     }
 
     @Override
