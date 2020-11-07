@@ -39,9 +39,9 @@ public final class SumoXConstants {
 
     public static final float POWERUP_LEAP_STRENGTH = 1.62f;
 
-    public static final double POWERUP_KBAURA_RADIUS = 5f;
+    public static final double POWERUP_KBAURA_RADIUS = 4f;
     public static final double POWERUP_KBAURA_Y_VELOCITY = 0.7f;
-    public static final float POWERUP_KBAURA_POWER = 1.4f;
+    public static final float POWERUP_KBAURA_POWER = 1.8f;
 
     public static final int POWERUP_RECALL_TICK_FRAMES = 20;
     public static final int POWERUP_RECALL_MAX_HISTORY = 5;
