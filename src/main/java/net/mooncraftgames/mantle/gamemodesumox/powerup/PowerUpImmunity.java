@@ -120,7 +120,7 @@ public final class PowerUpImmunity extends PowerUp implements Listener {
 
             if(gameHandler.getPlayers().contains(player)){
                 if(immunityPowerUps.containsKey(player) && immunityPowerUps.get(player) > 0) {
-                    player.getLevel().addSound(player.getPosition(), Sound.RANDOM_ANVIL_LAND, 0.7f, 1.2f, player, attacker);
+                    player.getLevel().addSound(player.getPosition(), Sound.RANDOM_ANVIL_LAND, 0.4f, 1.2f, player, attacker);
                     attacker.sendTitle(" ", "*KB Immune*", 3, 10, 7);
                     event.setCancelled(true);
                 }
