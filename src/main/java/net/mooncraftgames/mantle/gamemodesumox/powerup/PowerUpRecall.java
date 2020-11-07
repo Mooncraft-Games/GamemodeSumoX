@@ -52,7 +52,7 @@ public class PowerUpRecall extends PowerUp {
 
     @Override
     public Integer getItemID() {
-        return ItemID.HEART_OF_THE_SEA;
+        return ItemID.ENDER_PEARL;
     }
 
     @Override
