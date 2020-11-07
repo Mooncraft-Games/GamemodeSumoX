@@ -3,6 +3,7 @@ package net.mooncraftgames.mantle.gamemodesumox;
 import net.mooncraftgames.mantle.gamemodesumox.powerup.PowerUp;
 import net.mooncraftgames.mantle.gamemodesumox.powerup.PowerUpBlindness;
 import net.mooncraftgames.mantle.gamemodesumox.powerup.PowerUpImmunity;
+import net.mooncraftgames.mantle.gamemodesumox.powerup.PowerUpLeap;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -59,6 +60,7 @@ public final class SumoXConstants {
 
         puss.add(PowerUpBlindness.class);
         puss.add(PowerUpImmunity.class);
+        puss.add(PowerUpLeap.class);
 
         AVAILABLE_POWER_UPS = Collections.unmodifiableList(puss);
     }
