@@ -1,14 +1,17 @@
 package net.mooncraftgames.mantle.gamemodesumox.powerup;
 
 import cn.nukkit.Player;
+import cn.nukkit.block.BlockAir;
 import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.EventPriority;
 import cn.nukkit.event.HandlerList;
 import cn.nukkit.event.Listener;
 import cn.nukkit.event.entity.EntityDamageByEntityEvent;
+import cn.nukkit.item.*;
 import cn.nukkit.level.Sound;
 import net.mooncraftgames.mantle.gamemodesumox.SumoX;
 import net.mooncraftgames.mantle.newgamesapi.game.GameHandler;
+import net.mooncraftgames.mantle.newgamesapi.kits.Kit;
 
 import java.util.HashMap;
 
@@ -65,12 +68,39 @@ public final class PowerUpImmunity extends PowerUp implements Listener {
             immunityPowerUps.put(context.getPlayer(), oldVal + 1);
         } else {
             immunityPowerUps.put(context.getPlayer(), 1);
+            context.getPlayer().getInventory().setArmorContents(
+                    new Item[]{
+                            new ItemHelmetIron(),
+                            new ItemChestplateIron(),
+                            new ItemLeggingsIron(),
+                            new ItemBootsIron()
+            });
         }
 
         gameHandler.getGameScheduler().registerGameTask(() -> {
             if(immunityPowerUps.containsKey(context.getPlayer())){
                 int oldVal = immunityPowerUps.get(context.getPlayer());
                 immunityPowerUps.put(context.getPlayer(), oldVal - 1);
+                if((oldVal - 1) < 1){
+                    Kit kit = gameHandler.getAppliedSessionKits().get(context.getPlayer());
+                    if(kit != null) {
+                        context.getPlayer().getInventory().setArmorContents(
+                                new Item[]{
+                                        kit.getKitHelmet().orElse(new BlockAir().toItem()),
+                                        kit.getKitChestplate().orElse(new BlockAir().toItem()),
+                                        kit.getKitLeggings().orElse(new BlockAir().toItem()),
+                                        kit.getKitBoots().orElse(new BlockAir().toItem()),
+                                });
+                    } else {
+                        context.getPlayer().getInventory().setArmorContents(
+                                new Item[]{
+                                        new BlockAir().toItem(),
+                                        new BlockAir().toItem(),
+                                        new BlockAir().toItem(),
+                                        new BlockAir().toItem()
+                                });
+                    }
+                }
             }
         }, 20*7);
 
