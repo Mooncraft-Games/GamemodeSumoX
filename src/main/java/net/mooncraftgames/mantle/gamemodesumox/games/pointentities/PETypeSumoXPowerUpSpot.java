@@ -175,6 +175,9 @@ public class PETypeSumoXPowerUpSpot extends PointEntityType implements Listener 
         level.addParticleEffect(position, ParticleEffect.HUGE_EXPLOSION_LEVEL);
 
         powerUpEntities.add(guardian);
+        for(Player player: getGameHandler().getPlayers()){
+            player.sendMessage(Utility.generateServerMessage("POWER-UP", TextFormat.YELLOW, "A Power-Up Guardian has spawned!", TextFormat.GOLD));
+        }
 
         return guardian;
     }
@@ -189,7 +192,6 @@ public class PETypeSumoXPowerUpSpot extends PointEntityType implements Listener 
         if(powerUp.isConsumedImmediatley()){
             boolean result = powerUp.use(context);
             if(result){
-                //TODO: Message
                 context.getPlayer().getLevel().addSound(
                         context.getPlayer().getPosition(),
                         powerUp.useSound(),
@@ -214,7 +216,6 @@ public class PETypeSumoXPowerUpSpot extends PointEntityType implements Listener 
 
             pendingPowerUps.put(String.valueOf(powerUpItemCount), powerUp);
             powerUpItemCount++;
-            //TODO: Message
             return true;
         }
         return false;
