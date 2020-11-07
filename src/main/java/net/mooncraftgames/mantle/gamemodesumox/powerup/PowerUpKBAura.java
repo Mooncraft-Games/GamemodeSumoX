@@ -42,7 +42,7 @@ public class PowerUpKBAura extends PowerUp {
 
     @Override
     public int getWeight() {
-        return 100;
+        return 15;
     }
 
     @Override
