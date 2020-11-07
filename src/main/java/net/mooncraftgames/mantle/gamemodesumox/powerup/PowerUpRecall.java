@@ -47,7 +47,7 @@ public class PowerUpRecall extends PowerUp {
 
     @Override
     public int getWeight() {
-        return 500;
+        return 15;
     }
 
     @Override
