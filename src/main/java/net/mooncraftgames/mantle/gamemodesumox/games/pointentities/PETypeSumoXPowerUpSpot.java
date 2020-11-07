@@ -196,18 +196,18 @@ public class PETypeSumoXPowerUpSpot extends PointEntityType implements Listener 
                         gameHandler.getPlayers());
                 context.getPlayer().getLevel().addParticleEffect(context.getPlayer().getPosition().add(0, 2.2, 0), ParticleEffect.BASIC_CRIT);
                 return true;
-            } else {
-                return false;
             }
         } else {
             Item item = getItem(powerUp.getItemID());
             CompoundTag tag = item.hasCompoundTag() ? item.getNamedTag() : new CompoundTag();
             tag.putString(SumoXKeys.NBT_POWERUP_ITEM_TIE, String.valueOf(powerUpItemCount));
             item.setCompoundTag(tag);
+            context.getPlayer().getInventory().addItem(item);
 
             pendingPowerUps.put(String.valueOf(powerUpItemCount), powerUp);
             powerUpItemCount++;
             //TODO: Message
+            return true;
         }
         return false;
     }
