@@ -152,7 +152,7 @@ public class PETypeSumoXPowerUpSpot extends PointEntityType implements Listener 
                         powerUp.useSound(),
                         powerUp.useSoundVolume(),
                         powerUp.useSoundPitch(),
-                        context.getPlayer());
+                        gameHandler.getPlayers());
                 return true;
             } else {
                 return false;
