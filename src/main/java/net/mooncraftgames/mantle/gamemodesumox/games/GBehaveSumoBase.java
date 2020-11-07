@@ -172,10 +172,9 @@ public class GBehaveSumoBase extends GameBehavior {
                 event.setDeathState(GamePlayerDeathEvent.DeathState.TIMED_RESPAWN);
                 event.setRespawnSeconds(respawnTime);
             }
-
-            lifeTally.put(player, newVal);
-            for(Player p : getSessionHandler().getPlayers()) updateScoreboards(p);
         }
+        lifeTally.put(player, newVal);
+        for(Player p : getSessionHandler().getPlayers()) updateScoreboards(p);
     }
 
     protected void handleTimerTick(){
