@@ -257,7 +257,7 @@ public class PETypeSumoXPowerUpSpot extends PointEntityType implements Listener 
         }
     }
 
-    @EventHandler()
+    @EventHandler(ignoreCancelled = true)
     public void onItemUse(PlayerInteractEvent event){
         if(gameHandler.getPlayers().contains(event.getPlayer()) && event.getItem().hasCompoundTag()){
             CompoundTag nbt = event.getItem().getNamedTag();
@@ -279,6 +279,7 @@ public class PETypeSumoXPowerUpSpot extends PointEntityType implements Listener 
                     event.getPlayer().sendMessage(Utility.generateServerMessage("ERROR", TextFormat.DARK_RED, "The powerup you just used was broken. Oops!", TextFormat.RED));
                     event.getPlayer().getInventory().remove(event.getItem());
                 }
+                event.setCancelled(true);
             }
         }
     }
