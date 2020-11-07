@@ -1,9 +1,6 @@
 package net.mooncraftgames.mantle.gamemodesumox;
 
-import net.mooncraftgames.mantle.gamemodesumox.powerup.PowerUp;
-import net.mooncraftgames.mantle.gamemodesumox.powerup.PowerUpBlindness;
-import net.mooncraftgames.mantle.gamemodesumox.powerup.PowerUpImmunity;
-import net.mooncraftgames.mantle.gamemodesumox.powerup.PowerUpLeap;
+import net.mooncraftgames.mantle.gamemodesumox.powerup.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -42,6 +39,9 @@ public final class SumoXConstants {
 
     public static final float POWERUP_LEAP_STRENGTH = 1.5f;
 
+    public static final double POWERUP_KBAURA_RADIUS = 5f;
+    public static final double POWERUP_KBAURA_Y_VELOCITY = 0.7f;
+    public static final float POWERUP_KBAURA_POWER = 1.4f;
 
     // -- ANTI-CAMP --
     //TODO: Decide on one method or intergrate them all.
@@ -65,6 +65,7 @@ public final class SumoXConstants {
         puss.add(PowerUpBlindness.class);
         puss.add(PowerUpImmunity.class);
         puss.add(PowerUpLeap.class);
+        puss.add(PowerUpKBAura.class);
 
         AVAILABLE_POWER_UPS = Collections.unmodifiableList(puss);
     }
