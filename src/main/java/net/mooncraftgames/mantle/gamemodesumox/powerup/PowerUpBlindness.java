@@ -1,5 +1,6 @@
 package net.mooncraftgames.mantle.gamemodesumox.powerup;
 
+import cn.nukkit.item.ItemID;
 import cn.nukkit.level.Sound;
 import cn.nukkit.potion.Effect;
 import net.mooncraftgames.mantle.newgamesapi.game.GameHandler;
@@ -38,6 +39,11 @@ public class PowerUpBlindness extends PowerUp{
     @Override
     public int getWeight() {
         return 10;
+    }
+
+    @Override
+    public Integer getItemID() {
+        return ItemID.FERMENTED_SPIDER_EYE;
     }
 
     @Override

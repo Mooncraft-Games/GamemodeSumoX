@@ -21,6 +21,8 @@ public abstract class PowerUp {
 
     public abstract int getWeight();
 
+    public abstract Integer getItemID();
+
     public abstract boolean isConsumedImmediatley();
 
     public abstract boolean use(PowerUpContext context);

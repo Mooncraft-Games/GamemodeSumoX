@@ -57,6 +57,11 @@ public final class PowerUpImmunity extends PowerUp implements Listener {
     }
 
     @Override
+    public Integer getItemID() {
+        return ItemID.IRON_INGOT;
+    }
+
+    @Override
     public boolean isConsumedImmediatley() {
         return true;
     }
