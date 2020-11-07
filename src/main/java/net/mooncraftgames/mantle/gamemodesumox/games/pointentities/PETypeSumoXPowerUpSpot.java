@@ -1,6 +1,7 @@
 package net.mooncraftgames.mantle.gamemodesumox.games.pointentities;
 
 import cn.nukkit.Player;
+import cn.nukkit.entity.Entity;
 import cn.nukkit.entity.mob.EntityGuardian;
 import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.EventPriority;
@@ -31,6 +32,7 @@ import net.mooncraftgames.mantle.newgamesapi.map.pointentities.PointEntityCallDa
 import net.mooncraftgames.mantle.newgamesapi.map.pointentities.PointEntityType;
 import net.mooncraftgames.mantle.newgamesapi.map.types.PointEntity;
 
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.UUID;
 
@@ -40,6 +42,8 @@ public class PETypeSumoXPowerUpSpot extends PointEntityType implements Listener 
 
     private int maxWeight;
     private PowerUp[] powerUpPool;
+
+    private ArrayList<Entity> powerUpEntities;
 
     public PETypeSumoXPowerUpSpot(GameHandler gameHandler) {
         super(SumoXKeys.PE_TYPE_POWERUP, gameHandler);
@@ -67,12 +71,26 @@ public class PETypeSumoXPowerUpSpot extends PointEntityType implements Listener 
             }
         }
 
+        gameHandler.getGameScheduler().registerGameTask(this::animatePowerUp, SumoXConstants.POWERUP_ANIMATE_TICK_INTERVAL, SumoXConstants.POWERUP_ANIMATE_TICK_INTERVAL);
         SumoX.get().getServer().getPluginManager().registerEvents(this, SumoX.get());
     }
 
     @Override
     public void onUnregister() {
+        for(Entity entity: powerUpEntities){
+            entity.close();
+        }
         HandlerList.unregisterAll(this);
+    }
+
+    protected void animatePowerUp(){
+        for(Entity entity: new ArrayList<>(powerUpEntities)){
+            if(entity.isClosed()){
+                powerUpEntities.remove(entity);
+            } else {
+                entity.setRotation(entity.getYaw() + SumoXConstants.POWERUP_ANIMATE_TICK_SPEED, entity.getPitch());
+            }
+        }
     }
 
     protected void spawnPowerUp(PointEntityCallData data){
@@ -140,6 +158,8 @@ public class PETypeSumoXPowerUpSpot extends PointEntityType implements Listener 
         level.addSound(position, Sound.RANDOM_EXPLODE, 0.7f, 1f, gameHandler.getPlayers());
         level.addParticleEffect(position, ParticleEffect.HUGE_EXPLOSION_LEVEL);
 
+        powerUpEntities.add(guardian);
+
         return guardian;
     }
 
@@ -190,6 +210,7 @@ public class PETypeSumoXPowerUpSpot extends PointEntityType implements Listener 
                                     if(runPowerUp(entry, new PowerUpContext(attacker))){
                                         event.getEntity().getLevel().addSound(event.getEntity().getPosition(), Sound.MOB_WITHER_BREAK_BLOCK, 0.5f, 0.9f, gameHandler.getPlayers());
                                         event.getEntity().close();
+                                        powerUpEntities.remove(event.getEntity());
                                         GBehaveSumoBase behaviours = (GBehaveSumoBase) getGameHandler().getGameBehaviors();
                                         behaviours.getPowerUpPointCooldowns().put(s, generateNewTime(behaviours));
                                     }

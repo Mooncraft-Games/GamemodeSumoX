@@ -34,6 +34,9 @@ public final class SumoXConstants {
     /** The amount of extra time that can be added on between powerup spawns. */
     public static final int DEFAULT_VARIATION_POWERUP_SPAWN_TIME = 20;
 
+    public static final int POWERUP_ANIMATE_TICK_INTERVAL = 2;
+    public static final float POWERUP_ANIMATE_TICK_SPEED = 4.5f;
+
 
     // -- ANTI-CAMP --
     //TODO: Decide on one method or intergrate them all.
