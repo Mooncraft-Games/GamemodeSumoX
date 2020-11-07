@@ -18,7 +18,7 @@ public final class SumoXConstants {
     public static final float KNOCKBACK_BASE = 0.6f;
 
     /** base * (1.05^finals_time) = compound 5% boost every second. */
-    public static final float PANIC_KNOCKBACK_MULTIPLIER = 1.05f;
+    public static final float PANIC_KNOCKBACK_MULTIPLIER = 1.02f;
 
     /** Time in seconds to respawn. */
     public static final int DEFAULT_RESPAWN_SECONDS = 5;
