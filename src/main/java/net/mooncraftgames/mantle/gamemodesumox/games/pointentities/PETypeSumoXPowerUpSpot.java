@@ -8,8 +8,10 @@ import cn.nukkit.event.HandlerList;
 import cn.nukkit.event.Listener;
 import cn.nukkit.event.entity.EntityDamageByEntityEvent;
 import cn.nukkit.level.Level;
+import cn.nukkit.level.ParticleEffect;
 import cn.nukkit.level.Sound;
 import cn.nukkit.level.format.FullChunk;
+import cn.nukkit.level.particle.Particle;
 import cn.nukkit.math.Vector2;
 import cn.nukkit.math.Vector3;
 import cn.nukkit.nbt.tag.CompoundTag;
@@ -135,6 +137,9 @@ public class PETypeSumoXPowerUpSpot extends PointEntityType implements Listener 
         guardian.setNameTagAlwaysVisible(true);
         guardian.setScale(2);
 
+        level.addSound(position, Sound.RANDOM_EXPLODE, 0.7f, 1f, gameHandler.getPlayers());
+        level.addParticleEffect(position, ParticleEffect.HUGE_EXPLOSION_LEVEL);
+
         return guardian;
     }
 
@@ -154,6 +159,7 @@ public class PETypeSumoXPowerUpSpot extends PointEntityType implements Listener 
                         powerUp.useSoundVolume(),
                         powerUp.useSoundPitch(),
                         gameHandler.getPlayers());
+                context.getPlayer().getLevel().addParticleEffect(context.getPlayer().getPosition().add(0, 2.2, 0), ParticleEffect.BASIC_CRIT);
                 return true;
             } else {
                 return false;
