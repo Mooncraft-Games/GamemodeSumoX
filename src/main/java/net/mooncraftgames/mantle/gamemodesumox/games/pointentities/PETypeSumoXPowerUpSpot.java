@@ -276,6 +276,12 @@ public class PETypeSumoXPowerUpSpot extends PointEntityType implements Listener 
                 if(pendingPowerUps.containsKey(id)){
                     PowerUp p = pendingPowerUps.get(id);
                     if(p.use(new PowerUpContext(event.getPlayer()))){
+                        event.getPlayer().getLevel().addSound(
+                                event.getPlayer().getPosition(),
+                                p.useSound(),
+                                p.useSoundVolume(),
+                                p.useSoundPitch(),
+                                gameHandler.getPlayers());
                         event.getPlayer().getInventory().remove(event.getItem());
                     }
                 } else {
