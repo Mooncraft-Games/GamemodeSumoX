@@ -35,6 +35,7 @@ import net.mooncraftgames.mantle.newgamesapi.game.GameHandler;
 import net.mooncraftgames.mantle.newgamesapi.map.pointentities.PointEntityCallData;
 import net.mooncraftgames.mantle.newgamesapi.map.pointentities.PointEntityType;
 import net.mooncraftgames.mantle.newgamesapi.map.types.PointEntity;
+import net.mooncraftgames.mantle.newgamesapi.team.Team;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -228,27 +229,29 @@ public class PETypeSumoXPowerUpSpot extends PointEntityType implements Listener 
             Player attacker = (Player) event.getDamager();
 
             if(getGameHandler().getPlayers().contains(attacker)){
+                Optional<Team> t = getGameHandler().getPlayerTeam(attacker);
+                if(t.isPresent() && t.get().isActiveGameTeam()) {
+                    if (event.getEntity().namedTag.contains(SumoXKeys.NBT_POWERUP_PE_TIE)) {
 
-                if(event.getEntity().namedTag.contains(SumoXKeys.NBT_POWERUP_PE_TIE)){
-
-                    String s = event.getEntity().namedTag.getString(SumoXKeys.NBT_POWERUP_PE_TIE);
-                    if(s != null){
-                        if(getGameHandler().getGameBehaviors() instanceof GBehaveSumoBase) {
-                            event.setCancelled(true);
-                            int selection = new Random().nextInt(maxWeight);
-                            int cumulativeWeightChecked = 1;
-                            for(PowerUp entry: powerUpPool){
-                                if(selection <= (cumulativeWeightChecked + entry.getWeight())){
-                                    if(runPowerUp(entry, new PowerUpContext(attacker))){
-                                        event.getEntity().getLevel().addSound(event.getEntity().getPosition(), Sound.MOB_WITHER_BREAK_BLOCK, 0.5f, 0.9f, gameHandler.getPlayers());
-                                        event.getEntity().close();
-                                        powerUpEntities.remove(event.getEntity());
-                                        GBehaveSumoBase behaviours = (GBehaveSumoBase) getGameHandler().getGameBehaviors();
-                                        behaviours.getPowerUpPointCooldowns().put(s, generateNewTime(behaviours));
-                                        return;
+                        String s = event.getEntity().namedTag.getString(SumoXKeys.NBT_POWERUP_PE_TIE);
+                        if (s != null) {
+                            if (getGameHandler().getGameBehaviors() instanceof GBehaveSumoBase) {
+                                event.setCancelled(true);
+                                int selection = new Random().nextInt(maxWeight);
+                                int cumulativeWeightChecked = 1;
+                                for (PowerUp entry : powerUpPool) {
+                                    if (selection <= (cumulativeWeightChecked + entry.getWeight())) {
+                                        if (runPowerUp(entry, new PowerUpContext(attacker))) {
+                                            event.getEntity().getLevel().addSound(event.getEntity().getPosition(), Sound.MOB_WITHER_BREAK_BLOCK, 0.5f, 0.9f, gameHandler.getPlayers());
+                                            event.getEntity().close();
+                                            powerUpEntities.remove(event.getEntity());
+                                            GBehaveSumoBase behaviours = (GBehaveSumoBase) getGameHandler().getGameBehaviors();
+                                            behaviours.getPowerUpPointCooldowns().put(s, generateNewTime(behaviours));
+                                            return;
+                                        }
                                     }
+                                    cumulativeWeightChecked += entry.getWeight();
                                 }
-                                cumulativeWeightChecked += entry.getWeight();
                             }
                         }
                     }
