@@ -20,6 +20,7 @@ import net.mooncraftgames.mantle.newgamesapi.game.GameBehavior;
 import net.mooncraftgames.mantle.newgamesapi.game.GameHandler;
 import net.mooncraftgames.mantle.newgamesapi.game.events.GamePlayerDeathEvent;
 import net.mooncraftgames.mantle.newgamesapi.team.Team;
+import net.mooncraftgames.mantle.newgamesapi.team.TeamPresets;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -54,6 +55,11 @@ public class GBehaveSumoBase extends GameBehavior {
 
     protected HashMap<Player, ScoreboardDisplay> scoreboards;
     protected HashMap<Player, ArrayList<DisplayEntry>> scoreboardEntries;
+
+    @Override
+    public Team.GenericTeamBuilder[] getTeams() {
+        return TeamPresets.FREE_FOR_ALL;
+    }
 
     @Override
     public int onGameBegin() {
