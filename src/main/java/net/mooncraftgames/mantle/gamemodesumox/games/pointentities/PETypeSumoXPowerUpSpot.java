@@ -185,6 +185,7 @@ public class PETypeSumoXPowerUpSpot extends PointEntityType implements Listener 
     }
 
     protected boolean runPowerUp(PowerUp powerUp, PowerUpContext context){
+        String name = String.format("%s%s%s", TextFormat.DARK_PURPLE, TextFormat.BOLD, powerUp.getName());
         if(powerUp.isConsumedImmediatley()){
             boolean result = powerUp.use(context);
             if(result){
@@ -196,6 +197,9 @@ public class PETypeSumoXPowerUpSpot extends PointEntityType implements Listener 
                         powerUp.useSoundPitch(),
                         gameHandler.getPlayers());
                 context.getPlayer().getLevel().addParticleEffect(context.getPlayer().getPosition().add(0, 2.2f, 0), ParticleEffect.BASIC_CRIT);
+                context.getPlayer().sendMessage(Utility.generateServerMessage("POWER-UP", TextFormat.BLUE, String.format("You just activated the %s %s%spower-up!", name, TextFormat.RESET, TextFormat.BLUE)));
+                context.getPlayer().sendMessage(Utility.generateServerMessage("POWER-UP", TextFormat.BLUE, powerUp.getDescription()));
+                context.getPlayer().sendMessage(Utility.generateServerMessage("POWER-UP", TextFormat.BLUE, powerUp.getUsage()));
                 return true;
             }
         } else {
@@ -203,8 +207,10 @@ public class PETypeSumoXPowerUpSpot extends PointEntityType implements Listener 
             CompoundTag tag = item.hasCompoundTag() ? item.getNamedTag() : new CompoundTag();
             tag.putString(SumoXKeys.NBT_POWERUP_ITEM_TIE, String.valueOf(powerUpItemCount));
             item.setCompoundTag(tag);
-            item.setCustomName(String.format("%s%s%s - %s%s%s", TextFormat.DARK_PURPLE, TextFormat.BOLD, powerUp.getName(), TextFormat.LIGHT_PURPLE, TextFormat.BOLD, powerUp.getUsage()));
+            item.setCustomName(String.format("%s - %s%s%s", name, TextFormat.LIGHT_PURPLE, TextFormat.BOLD, powerUp.getUsage()));
             context.getPlayer().getInventory().addItem(item);
+            context.getPlayer().sendMessage(Utility.generateServerMessage("POWER-UP", TextFormat.BLUE, String.format("You just recieved the %s %s%spower-up!", name, TextFormat.RESET, TextFormat.BLUE)));
+            context.getPlayer().sendMessage(Utility.generateServerMessage("POWER-UP", TextFormat.BLUE, powerUp.getDescription()));
 
             pendingPowerUps.put(String.valueOf(powerUpItemCount), powerUp);
             powerUpItemCount++;
