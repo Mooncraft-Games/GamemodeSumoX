@@ -1,6 +1,7 @@
 package net.mooncraftgames.mantle.gamemodesumox.games.pointentities;
 
 import cn.nukkit.Player;
+import cn.nukkit.block.Block;
 import cn.nukkit.entity.Entity;
 import cn.nukkit.entity.mob.EntityGuardian;
 import cn.nukkit.event.EventHandler;
@@ -9,8 +10,8 @@ import cn.nukkit.event.HandlerList;
 import cn.nukkit.event.Listener;
 import cn.nukkit.event.entity.EntityDamageByEntityEvent;
 import cn.nukkit.event.player.PlayerInteractEvent;
-import cn.nukkit.event.player.PlayerItemConsumeEvent;
 import cn.nukkit.item.Item;
+import cn.nukkit.item.ItemID;
 import cn.nukkit.level.Level;
 import cn.nukkit.level.ParticleEffect;
 import cn.nukkit.level.Sound;
@@ -37,6 +38,7 @@ import net.mooncraftgames.mantle.newgamesapi.map.types.PointEntity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Optional;
 import java.util.Random;
 
 public class PETypeSumoXPowerUpSpot extends PointEntityType implements Listener {
@@ -46,7 +48,7 @@ public class PETypeSumoXPowerUpSpot extends PointEntityType implements Listener 
     protected int maxWeight;
     protected PowerUp[] powerUpPool;
 
-    protected int powerUpID;
+    protected int powerUpItemCount;
     protected HashMap<String, PowerUp> pendingPowerUps;
     protected ArrayList<Player> powerUpItemCooldowns;
 
@@ -58,7 +60,7 @@ public class PETypeSumoXPowerUpSpot extends PointEntityType implements Listener 
         this.maxWeight = 0;
         this.powerUpPool = new PowerUp[0];
 
-        this.powerUpID = 0;
+        this.powerUpItemCount = 0;
         this.pendingPowerUps = new HashMap<>();
         this.powerUpItemCooldowns = new ArrayList<>();
 
@@ -198,9 +200,25 @@ public class PETypeSumoXPowerUpSpot extends PointEntityType implements Listener 
                 return false;
             }
         } else {
-            //TODO: Item Usage.
+            Item item = getItem(powerUp.getItemID());
+            CompoundTag tag = item.hasCompoundTag() ? item.getNamedTag() : new CompoundTag();
+            tag.putString(SumoXKeys.NBT_POWERUP_ITEM_TIE, String.valueOf(powerUpItemCount));
+            item.setCompoundTag(tag);
+
+            pendingPowerUps.put(String.valueOf(powerUpItemCount), powerUp);
+            powerUpItemCount++;
+            //TODO: Message
         }
         return false;
+    }
+
+    private Item getItem(Integer id){
+        if(id != null && id != 0){
+            if(id < 256 && Block.list[id] != null) return Item.get(id);
+            if(id < 65535 && Item.list[id] != null) return Item.get(id);
+        }
+
+        return Item.get(ItemID.BEETROOT);
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
