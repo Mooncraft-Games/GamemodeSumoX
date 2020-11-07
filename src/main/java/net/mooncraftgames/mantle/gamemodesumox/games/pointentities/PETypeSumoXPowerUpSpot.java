@@ -203,7 +203,7 @@ public class PETypeSumoXPowerUpSpot extends PointEntityType implements Listener 
             CompoundTag tag = item.hasCompoundTag() ? item.getNamedTag() : new CompoundTag();
             tag.putString(SumoXKeys.NBT_POWERUP_ITEM_TIE, String.valueOf(powerUpItemCount));
             item.setCompoundTag(tag);
-            item.setCustomName(String.format("%s%s%s", TextFormat.GOLD, TextFormat.BOLD, powerUp.getName()));
+            item.setCustomName(String.format("%s%s%s - %s%s%s", TextFormat.DARK_PURPLE, TextFormat.BOLD, powerUp.getName(), TextFormat.LIGHT_PURPLE, TextFormat.BOLD, powerUp.getUsage()));
             context.getPlayer().getInventory().addItem(item);
 
             pendingPowerUps.put(String.valueOf(powerUpItemCount), powerUp);
