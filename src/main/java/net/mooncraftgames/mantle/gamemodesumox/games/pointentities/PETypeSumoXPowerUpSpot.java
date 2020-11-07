@@ -212,6 +212,7 @@ public class PETypeSumoXPowerUpSpot extends PointEntityType implements Listener 
                                         powerUpEntities.remove(event.getEntity());
                                         GBehaveSumoBase behaviours = (GBehaveSumoBase) getGameHandler().getGameBehaviors();
                                         behaviours.getPowerUpPointCooldowns().put(s, generateNewTime(behaviours));
+                                        return;
                                     }
                                 }
                                 cumulativeWeightChecked += entry.getWeight();
