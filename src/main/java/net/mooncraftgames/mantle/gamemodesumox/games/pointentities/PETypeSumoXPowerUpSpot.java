@@ -8,6 +8,7 @@ import cn.nukkit.event.HandlerList;
 import cn.nukkit.event.Listener;
 import cn.nukkit.event.entity.EntityDamageByEntityEvent;
 import cn.nukkit.level.Level;
+import cn.nukkit.level.Sound;
 import cn.nukkit.level.format.FullChunk;
 import cn.nukkit.math.Vector2;
 import cn.nukkit.math.Vector3;
@@ -181,6 +182,7 @@ public class PETypeSumoXPowerUpSpot extends PointEntityType implements Listener 
                             for(PowerUp entry: powerUpPool){
                                 if(selection <= (cumulativeWeightChecked + entry.getWeight())){
                                     if(runPowerUp(entry, new PowerUpContext(attacker))){
+                                        event.getEntity().getLevel().addSound(event.getEntity().getPosition(), Sound.MOB_WITHER_BREAK_BLOCK, 0.5f, 0.9f, gameHandler.getPlayers());
                                         event.getEntity().close();
                                         GBehaveSumoBase behaviours = (GBehaveSumoBase) getGameHandler().getGameBehaviors();
                                         behaviours.getPowerUpPointCooldowns().put(s, generateNewTime(behaviours));
