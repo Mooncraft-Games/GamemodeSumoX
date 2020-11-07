@@ -114,10 +114,14 @@ public final class PowerUpImmunity extends PowerUp implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = false)
     public void getJellyBaboon(EntityDamageByEntityEvent event){
-        if(event.getEntity() instanceof Player){
+        if(event.getEntity() instanceof Player && event.getDamager() instanceof Player){
             Player player = (Player) event.getEntity();
+            Player attacker = (Player) event.getDamager();
+
             if(gameHandler.getPlayers().contains(player)){
                 if(immunityPowerUps.containsKey(player) && immunityPowerUps.get(player) > 0) {
+                    player.getLevel().addSound(player.getPosition(), Sound.RANDOM_ANVIL_LAND, 0.7f, 1.2f, player, attacker);
+                    attacker.sendTitle(" ", "*KB Immune*", 3, 10, 7);
                     event.setCancelled(true);
                 }
             }
