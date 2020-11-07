@@ -38,6 +38,10 @@ public final class SumoXConstants {
     public static final int POWERUP_ANIMATE_TICK_INTERVAL = 2;
     public static final float POWERUP_ANIMATE_TICK_SPEED = 4.5f;
 
+    // -- POWER-UPS --
+
+    public static final float POWERUP_LEAP_STRENGTH = 1.5f;
+
 
     // -- ANTI-CAMP --
     //TODO: Decide on one method or intergrate them all.

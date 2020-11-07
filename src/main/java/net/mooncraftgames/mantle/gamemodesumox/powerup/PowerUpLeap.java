@@ -6,6 +6,7 @@ import cn.nukkit.level.Sound;
 import cn.nukkit.math.Vector3;
 import cn.nukkit.math.Vector3f;
 import cn.nukkit.potion.Effect;
+import net.mooncraftgames.mantle.gamemodesumox.SumoXConstants;
 import net.mooncraftgames.mantle.newgamesapi.game.GameHandler;
 
 public class PowerUpLeap extends PowerUp {
@@ -58,7 +59,7 @@ public class PowerUpLeap extends PowerUp {
     public boolean use(PowerUpContext context) {
         Player p = context.getPlayer();
         Vector3 dir = p.getDirectionVector();
-        p.setMotion(new Vector3(dir.x, Math.abs(dir.y), dir.z).multiply(1.7f));
+        p.setMotion(new Vector3(dir.x, Math.abs(dir.y), dir.z).multiply(SumoXConstants.POWERUP_LEAP_STRENGTH));
         return true;
     }
 
