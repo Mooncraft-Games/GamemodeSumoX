@@ -43,6 +43,9 @@ public final class SumoXConstants {
     public static final double POWERUP_KBAURA_Y_VELOCITY = 0.7f;
     public static final float POWERUP_KBAURA_POWER = 1.4f;
 
+    public static final int POWERUP_RECALL_TICK_FRAMES = 20;
+    public static final int POWERUP_RECALL_MAX_HISTORY = 5;
+
     // -- ANTI-CAMP --
     //TODO: Decide on one method or intergrate them all.
 
@@ -66,6 +69,7 @@ public final class SumoXConstants {
         puss.add(PowerUpImmunity.class);
         puss.add(PowerUpLeap.class);
         puss.add(PowerUpKBAura.class);
+        puss.add(PowerUpRecall.class);
 
         AVAILABLE_POWER_UPS = Collections.unmodifiableList(puss);
     }
