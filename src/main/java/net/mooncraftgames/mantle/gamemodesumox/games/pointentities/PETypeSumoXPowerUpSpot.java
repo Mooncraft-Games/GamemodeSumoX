@@ -8,6 +8,9 @@ import cn.nukkit.event.EventPriority;
 import cn.nukkit.event.HandlerList;
 import cn.nukkit.event.Listener;
 import cn.nukkit.event.entity.EntityDamageByEntityEvent;
+import cn.nukkit.event.player.PlayerInteractEvent;
+import cn.nukkit.event.player.PlayerItemConsumeEvent;
+import cn.nukkit.item.Item;
 import cn.nukkit.level.Level;
 import cn.nukkit.level.ParticleEffect;
 import cn.nukkit.level.Sound;
@@ -18,6 +21,7 @@ import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.nbt.tag.DoubleTag;
 import cn.nukkit.nbt.tag.FloatTag;
 import cn.nukkit.nbt.tag.ListTag;
+import cn.nukkit.utils.TextFormat;
 import net.mooncraftgames.mantle.gamemodesumox.SumoX;
 import net.mooncraftgames.mantle.gamemodesumox.SumoXConstants;
 import net.mooncraftgames.mantle.gamemodesumox.SumoXKeys;
@@ -25,28 +29,38 @@ import net.mooncraftgames.mantle.gamemodesumox.SumoXStrings;
 import net.mooncraftgames.mantle.gamemodesumox.games.GBehaveSumoBase;
 import net.mooncraftgames.mantle.gamemodesumox.powerup.PowerUp;
 import net.mooncraftgames.mantle.gamemodesumox.powerup.PowerUpContext;
+import net.mooncraftgames.mantle.newgamesapi.Utility;
 import net.mooncraftgames.mantle.newgamesapi.game.GameHandler;
 import net.mooncraftgames.mantle.newgamesapi.map.pointentities.PointEntityCallData;
 import net.mooncraftgames.mantle.newgamesapi.map.pointentities.PointEntityType;
 import net.mooncraftgames.mantle.newgamesapi.map.types.PointEntity;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 
 public class PETypeSumoXPowerUpSpot extends PointEntityType implements Listener {
 
-    private boolean triggeredMisuseWarning = false;
+    protected boolean triggeredMisuseWarning = false;
 
-    private int maxWeight;
-    private PowerUp[] powerUpPool;
+    protected int maxWeight;
+    protected PowerUp[] powerUpPool;
 
-    private ArrayList<Entity> powerUpEntities;
+    protected int powerUpID;
+    protected HashMap<String, PowerUp> pendingPowerUps;
+    protected ArrayList<Player> powerUpItemCooldowns;
+
+    protected ArrayList<Entity> powerUpEntities;
 
     public PETypeSumoXPowerUpSpot(GameHandler gameHandler) {
         super(SumoXKeys.PE_TYPE_POWERUP, gameHandler);
 
         this.maxWeight = 0;
         this.powerUpPool = new PowerUp[0];
+
+        this.powerUpID = 0;
+        this.pendingPowerUps = new HashMap<>();
+        this.powerUpItemCooldowns = new ArrayList<>();
 
         this.powerUpEntities = new ArrayList<>();
     }
@@ -219,6 +233,32 @@ public class PETypeSumoXPowerUpSpot extends PointEntityType implements Listener 
                             }
                         }
                     }
+                }
+            }
+        }
+    }
+
+    @EventHandler()
+    public void onItemUse(PlayerInteractEvent event){
+        if(gameHandler.getPlayers().contains(event.getPlayer()) && event.getItem().hasCompoundTag()){
+            CompoundTag nbt = event.getItem().getNamedTag();
+
+            if(nbt.contains(SumoXKeys.NBT_POWERUP_ITEM_TIE) && !powerUpItemCooldowns.contains(event.getPlayer())){
+                powerUpItemCooldowns.add(event.getPlayer());
+                gameHandler.getGameScheduler().registerGameTask(() -> {
+                    powerUpItemCooldowns.remove(event.getPlayer());
+                }, 20);
+
+
+                String id = nbt.getString(SumoXKeys.NBT_POWERUP_ITEM_TIE);
+                if(pendingPowerUps.containsKey(id)){
+                    PowerUp p = pendingPowerUps.get(id);
+                    if(p.use(new PowerUpContext(event.getPlayer()))){
+                        event.getItem().setCount(0);
+                    }
+                } else {
+                    event.getPlayer().sendMessage(Utility.generateServerMessage("ERROR", TextFormat.DARK_RED, "The powerup you just used was broken. Oops!", TextFormat.RED));
+                    event.getItem().setCount(0);
                 }
             }
         }
