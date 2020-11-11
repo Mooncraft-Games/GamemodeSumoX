@@ -368,7 +368,7 @@ public class GBehaveSumoBase extends GameBehavior {
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onDamage(EntityDamageByEntityEvent event){
-        if(event.getEntity() instanceof Player){
+        if(event.getEntity() instanceof Player && event.getDamager() instanceof Player){
             Player player = (Player) event.getEntity();
             if(getSessionHandler().getPlayers().contains(player)){
                 event.setCancelled(true);
