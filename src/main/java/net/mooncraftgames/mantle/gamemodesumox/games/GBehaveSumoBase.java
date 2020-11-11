@@ -381,11 +381,15 @@ public class GBehaveSumoBase extends GameBehavior {
     }
 
     public void doKnockback(Player victim, Entity target, double baseKB) {
-        double deltaX = victim.getX() - target.getX();
-        double deltaZ = victim.getZ() - target.getZ();
         // If panic: base * (multiplier ^ time elapsed in panic zone)
         double knockbackValue = isInPanicMode ? Math.min(baseKB * (Math.pow(SumoXConstants.PANIC_KNOCKBACK_MULTIPLIER, (getTimeElapsed()-Math.floor(maxTimer*(1-SumoXConstants.BASE_TIMER_PANIC_ZONE))))), baseKB*5) : baseKB;
-        victim.knockBack(target, 0, deltaX, deltaZ, knockbackValue);
+        applyKnockback(victim, target, knockbackValue);
+    }
+
+    public static void applyKnockback(Player victim, Entity target, double fullKB) {
+        double deltaX = victim.getX() - target.getX();
+        double deltaZ = victim.getZ() - target.getZ();
+        victim.knockBack(target, 0, deltaX, deltaZ, fullKB);
     }
 
 }
