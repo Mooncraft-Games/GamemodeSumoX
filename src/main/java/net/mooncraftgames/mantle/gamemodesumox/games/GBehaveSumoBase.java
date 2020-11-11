@@ -380,16 +380,34 @@ public class GBehaveSumoBase extends GameBehavior {
         }
     }
 
-    public void doKnockback(Player victim, Entity target, double baseKB) {
+    public void doKnockback(Player victim, Entity attacker, double baseKB) {
         // If panic: base * (multiplier ^ time elapsed in panic zone)
-        double knockbackValue = isInPanicMode ? Math.min(baseKB * (Math.pow(SumoXConstants.PANIC_KNOCKBACK_MULTIPLIER, (getTimeElapsed()-Math.floor(maxTimer*(1-SumoXConstants.BASE_TIMER_PANIC_ZONE))))), baseKB*5) : baseKB;
-        applyKnockback(victim, target, knockbackValue);
+
+        float victimModifier = 1.0f;
+        float attackModifier = 1.0f;
+
+        Kit victimkit = getSessionHandler().getAppliedSessionKits().get(victim);
+        if(victimkit != null){
+            victimModifier = SumoUtil.StringToFloat(victimkit.getProperty(SumoXKeys.KIT_PROP_TAKEN_KB_MULT).orElse(null)).orElse(1.0f);
+        }
+
+        if(attacker instanceof Player) {
+            Player p = (Player) attacker;
+            Kit attackerkit = getSessionHandler().getAppliedSessionKits().get(p);
+            if (attackerkit != null) {
+                attackModifier = SumoUtil.StringToFloat(attackerkit.getProperty(SumoXKeys.KIT_PROP_GIVEN_KB_MULT).orElse(null)).orElse(1.0f);
+            }
+        }
+
+        double baseKBValue = baseKB * victimModifier * attackModifier;
+        double knockbackValue = isInPanicMode ? Math.min(baseKBValue * (Math.pow(SumoXConstants.PANIC_KNOCKBACK_MULTIPLIER, (getTimeElapsed()-Math.floor(maxTimer*(1-SumoXConstants.BASE_TIMER_PANIC_ZONE))))), baseKBValue*5) : baseKBValue;
+        applyKnockback(victim, attacker, knockbackValue);
     }
 
-    public static void applyKnockback(Player victim, Entity target, double fullKB) {
-        double deltaX = victim.getX() - target.getX();
-        double deltaZ = victim.getZ() - target.getZ();
-        victim.knockBack(target, 0, deltaX, deltaZ, fullKB);
+    public static void applyKnockback(Player victim, Entity attacker, double fullKB) {
+        double deltaX = victim.getX() - attacker.getX();
+        double deltaZ = victim.getZ() - attacker.getZ();
+        victim.knockBack(attacker, 0, deltaX, deltaZ, fullKB);
     }
 
 }
