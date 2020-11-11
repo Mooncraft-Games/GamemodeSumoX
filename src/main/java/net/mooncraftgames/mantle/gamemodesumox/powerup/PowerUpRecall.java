@@ -4,9 +4,12 @@ import cn.nukkit.Player;
 import cn.nukkit.item.ItemID;
 import cn.nukkit.level.Sound;
 import cn.nukkit.math.Vector3;
+import net.mooncraftgames.mantle.gamemodesumox.SumoUtil;
 import net.mooncraftgames.mantle.gamemodesumox.SumoX;
 import net.mooncraftgames.mantle.gamemodesumox.SumoXConstants;
+import net.mooncraftgames.mantle.gamemodesumox.SumoXKeys;
 import net.mooncraftgames.mantle.newgamesapi.game.GameHandler;
+import net.mooncraftgames.mantle.newgamesapi.kits.Kit;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -51,6 +54,15 @@ public class PowerUpRecall extends PowerUp {
     }
 
     @Override
+    public int getBonusWeight(PowerUpContext context) {
+        Kit kit = gameHandler.getAppliedSessionKits().get(context.getPlayer());
+        if(kit != null){
+            return SumoUtil.StringToInt(kit.getProperty(SumoXKeys.KIT_PROP_RECALL_BONUS_WEIGHT).orElse(null)).orElse(0);
+        }
+        return 0;
+    }
+
+    @Override
     public Integer getItemID() {
         return ItemID.ENDER_PEARL;
     }
@@ -74,6 +86,7 @@ public class PowerUpRecall extends PowerUp {
 
     public void onSecondTick(){
         for(Player player: gameHandler.getPlayers()){
+
             if(!recallLists.containsKey(player)){
                 recallLists.put(player, new ArrayList<>());
             }
@@ -81,8 +94,16 @@ public class PowerUpRecall extends PowerUp {
             positions.add(0, player.getPosition());
 
             int originalSize = positions.size();
-            for(int i = SumoXConstants.POWERUP_RECALL_MAX_HISTORY; i < originalSize; i++){
-                positions.remove(SumoXConstants.POWERUP_RECALL_MAX_HISTORY);
+            int historySize = SumoXConstants.POWERUP_RECALL_MAX_HISTORY;
+
+            Kit kit = gameHandler.getAppliedSessionKits().get(player);
+
+            if(kit != null){
+                historySize = SumoUtil.StringToInt(kit.getProperty(SumoXKeys.KIT_PROP_RECALL_TIME).orElse(null)).orElse(SumoXConstants.POWERUP_RECALL_MAX_HISTORY);
+            }
+
+            for(int i = historySize; i < originalSize; i++){
+                positions.remove(historySize);
             }
         }
     }
