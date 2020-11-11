@@ -1,5 +1,6 @@
 package net.mooncraftgames.mantle.gamemodesumox.kits;
 
+import cn.nukkit.command.data.CommandParameter;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemFish;
 import cn.nukkit.item.ItemHelmetDiamond;
@@ -19,6 +20,11 @@ public class KitSlapper extends Kit {
     @Override
     public String getKitDisplayName() {
         return "Slapper";
+    }
+
+    @Override
+    public int getCost() {
+        return 100;
     }
 
     @Override

@@ -19,7 +19,7 @@ public class SumoX extends PluginBase {
     public void onEnable() {
         sumoxinstance = this;
 
-        KitRegistry.get().registerKitGroup(new KitGroup("sumox", new KitSlapper()));
+        KitRegistry.get().registerKitGroup(new KitGroup("sumox", "Sumo X", true, new KitSlapper()));
 
         GameProperties sumoBrawlProperties = new GameProperties(GameHandler.AutomaticWinPolicy.MANUAL_CALLS_ONLY)
                 .setCanPlayersMoveDuringCountdown(false)
