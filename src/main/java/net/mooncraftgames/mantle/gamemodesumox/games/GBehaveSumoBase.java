@@ -4,21 +4,20 @@ import cn.nukkit.Player;
 import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.EventPriority;
 import cn.nukkit.event.entity.EntityDamageByEntityEvent;
+import cn.nukkit.event.player.PlayerToggleSprintEvent;
 import cn.nukkit.level.Sound;
 import cn.nukkit.utils.BlockColor;
 import cn.nukkit.utils.DummyBossBar;
 import cn.nukkit.utils.TextFormat;
 import de.lucgameshd.scoreboard.api.ScoreboardAPI;
 import de.lucgameshd.scoreboard.network.*;
-import net.mooncraftgames.mantle.gamemodesumox.SumoX;
-import net.mooncraftgames.mantle.gamemodesumox.SumoXConstants;
-import net.mooncraftgames.mantle.gamemodesumox.SumoXKeys;
-import net.mooncraftgames.mantle.gamemodesumox.SumoXStrings;
+import net.mooncraftgames.mantle.gamemodesumox.*;
 import net.mooncraftgames.mantle.gamemodesumox.games.pointentities.PETypeSumoXPowerUpSpot;
 import net.mooncraftgames.mantle.newgamesapi.Utility;
 import net.mooncraftgames.mantle.newgamesapi.game.GameBehavior;
 import net.mooncraftgames.mantle.newgamesapi.game.GameHandler;
 import net.mooncraftgames.mantle.newgamesapi.game.events.GamePlayerDeathEvent;
+import net.mooncraftgames.mantle.newgamesapi.kits.Kit;
 import net.mooncraftgames.mantle.newgamesapi.team.Team;
 import net.mooncraftgames.mantle.newgamesapi.team.TeamPresets;
 
@@ -47,6 +46,9 @@ public class GBehaveSumoBase extends GameBehavior {
 
     protected int defaultTally;
     protected HashMap<Player, Integer> lifeTally;
+
+    protected float gameBaseSpeedMultiplier;
+    protected float gameSpeedMultiplier;
 
     protected HashMap<Player, DummyBossBar> bartimerBossbars;
     protected TextFormat bartimerMainTextColour;
@@ -78,6 +80,9 @@ public class GBehaveSumoBase extends GameBehavior {
 
         this.defaultTally = Math.max(getSessionHandler().getPrimaryMapID().getIntegers().getOrDefault(SumoXKeys.INT_LIVES, SumoXConstants.DEFAULT_LIVES), 1);
         this.lifeTally = new HashMap<>();
+
+        this.gameBaseSpeedMultiplier = Math.max(getSessionHandler().getPrimaryMapID().getFloats().getOrDefault(SumoXKeys.FLOAT_BASE_GAME_SPEED, SumoXConstants.DEFAULT_BASE_GAME_SPEED), 0f);
+        this.gameSpeedMultiplier = gameBaseSpeedMultiplier;
 
         this.bartimerBossbars = new HashMap<>();
         this.bartimerMainTextColour = TextFormat.BLUE;
@@ -324,10 +329,41 @@ public class GBehaveSumoBase extends GameBehavior {
     public boolean isPanicModeAllowed() { return isPanicModeAllowed; }
     public boolean arePowerUpsAllowed() { return arePowerUpsAllowed; }
 
+    public float getGameBaseSpeedMultiplier() { return gameBaseSpeedMultiplier; }
+    public float getGameSpeedMultiplier() { return gameSpeedMultiplier; }
+
     public int getMinimumPowerUpSpawnTime() { return minimumPowerUpSpawnTime; }
     public int getVariationPowerUpSpawnTime() { return variationPowerUpSpawnTime; }
     public HashMap<String, Integer> getPowerUpPointCooldowns() {
         return powerUpPointCooldowns;
+    }
+
+
+    public void setGameSpeedMultiplier(float gameSpeedMultiplier) { this.gameSpeedMultiplier = gameSpeedMultiplier; }
+
+    @EventHandler
+    public void onSprintChange(PlayerToggleSprintEvent event){
+        if(getSessionHandler().getPlayers().contains(event.getPlayer()) && getSessionHandler().getGameState() == GameHandler.GameState.MAIN_LOOP) sprintChangeEvent(event.getPlayer());
+    }
+
+    protected void sprintChangeEvent(Player player){
+        float kitModifier = 1f;
+        Kit kit = getSessionHandler().getAppliedSessionKits().get(player);
+
+        if(kit != null){
+            Optional<String> kitSpeedStr = kit.getProperty(SumoXKeys.KIT_PROP_SPEED_MULT);
+
+            if(kitSpeedStr.isPresent()){
+                Optional<Float> f = SumoUtil.StringToFloat(kitSpeedStr.get());
+                if(f.isPresent()) kitModifier = f.get();
+            }
+        }
+
+        if(player.isSprinting()){
+            player.setMovementSpeed((SumoXConstants.VANILLA_BASE_SPEED * kitModifier * SumoXConstants.VANILLA_SPRINT_SPEED_MULTIPLIER) * gameSpeedMultiplier); //Vanilla is a 30% increase
+        } else {
+            player.setMovementSpeed(SumoXConstants.VANILLA_BASE_SPEED * kitModifier * gameSpeedMultiplier);
+        }
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)

@@ -35,6 +35,11 @@ public final class SumoXConstants {
     public static final int POWERUP_ANIMATE_TICK_INTERVAL = 2;
     public static final float POWERUP_ANIMATE_TICK_SPEED = 4.5f;
 
+    public static final float DEFAULT_BASE_GAME_SPEED = 1f;
+
+    public static final float VANILLA_BASE_SPEED = 0.1f;
+    public static final float VANILLA_SPRINT_SPEED_MULTIPLIER = 1.3f;
+
     // -- POWER-UPS --
 
     public static final float POWERUP_LEAP_STRENGTH = 1.62f;
