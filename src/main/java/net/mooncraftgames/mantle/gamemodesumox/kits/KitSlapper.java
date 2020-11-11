@@ -38,7 +38,7 @@ public class KitSlapper extends Kit {
     }
 
     @Override
-    public Item[] getKitItems() {
+    public Item[] getHotbarItems() {
         Item slapItem =  new ItemFish().setCustomName(""+TextFormat.GREEN+TextFormat.BOLD+"Ol' Slappy");
         slapItem.addEnchantment(Enchantment.get(Enchantment.ID_PROTECTION_ALL).setLevel(1));
         return new Item[]{

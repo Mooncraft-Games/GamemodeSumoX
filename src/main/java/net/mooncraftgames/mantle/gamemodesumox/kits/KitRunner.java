@@ -38,7 +38,7 @@ public class KitRunner extends Kit {
     }
 
     @Override
-    public Item[] getKitItems() {
+    public Item[] getHotbarItems() {
         Item slapItem =  new ItemClownfish().setCustomName(""+TextFormat.GOLD+TextFormat.BOLD+"Trendy Terry");
         slapItem.addEnchantment(Enchantment.get(Enchantment.ID_PROTECTION_ALL).setLevel(1));
         return new Item[]{

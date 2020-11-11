@@ -39,7 +39,7 @@ public class KitTimelord extends Kit {
     }
 
     @Override
-    public Item[] getKitItems() {
+    public Item[] getHotbarItems() {
         Item slapItem =  new ItemClock().setCustomName(""+TextFormat.LIGHT_PURPLE+TextFormat.BOLD+"The Wibbly Wobbly Timey Wimey");
         slapItem.addEnchantment(Enchantment.get(Enchantment.ID_PROTECTION_ALL).setLevel(1));
         return new Item[]{
