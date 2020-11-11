@@ -237,18 +237,26 @@ public class PETypeSumoXPowerUpSpot extends PointEntityType implements Listener 
 
             if(getGameHandler().getPlayers().contains(attacker)){
                 Optional<Team> t = getGameHandler().getPlayerTeam(attacker);
+
                 if(t.isPresent() && t.get().isActiveGameTeam()) {
+
                     if (event.getEntity().namedTag.contains(SumoXKeys.NBT_POWERUP_PE_TIE)) {
 
                         String s = event.getEntity().namedTag.getString(SumoXKeys.NBT_POWERUP_PE_TIE);
+
                         if (s != null) {
+
                             if (getGameHandler().getGameBehaviors() instanceof GBehaveSumoBase) {
+                                PowerUpContext context = new PowerUpContext(attacker);
                                 event.setCancelled(true);
                                 int selection = new Random().nextInt(maxWeight);
                                 int cumulativeWeightChecked = 1;
+
                                 for (PowerUp entry : powerUpPool) {
-                                    if (selection <= (cumulativeWeightChecked + entry.getWeight())) {
-                                        if (runPowerUp(entry, new PowerUpContext(attacker))) {
+
+                                    if (selection <= (cumulativeWeightChecked + entry.getTotalWeight(context))) {
+
+                                        if (runPowerUp(entry, context)) {
                                             event.getEntity().getLevel().addSound(event.getEntity().getPosition(), Sound.MOB_WITHER_BREAK_BLOCK, 0.5f, 0.9f, gameHandler.getPlayers());
                                             event.getEntity().close();
                                             powerUpEntities.remove(event.getEntity());
