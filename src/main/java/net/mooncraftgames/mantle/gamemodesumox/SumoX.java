@@ -3,6 +3,7 @@ package net.mooncraftgames.mantle.gamemodesumox;
 import cn.nukkit.plugin.PluginBase;
 import cn.nukkit.plugin.PluginLogger;
 import net.mooncraftgames.mantle.gamemodesumox.games.GBehaveSumoBase;
+import net.mooncraftgames.mantle.gamemodesumox.kits.KitRunner;
 import net.mooncraftgames.mantle.gamemodesumox.kits.KitSlapper;
 import net.mooncraftgames.mantle.newgamesapi.game.GameHandler;
 import net.mooncraftgames.mantle.newgamesapi.game.GameID;
@@ -19,7 +20,7 @@ public class SumoX extends PluginBase {
     public void onEnable() {
         sumoxinstance = this;
 
-        KitRegistry.get().registerKitGroup(new KitGroup("sumox", "Sumo X", true, new KitSlapper()));
+        KitRegistry.get().registerKitGroup(new KitGroup("sumox", "Sumo X", true, new KitSlapper(), new KitRunner()));
 
         GameProperties sumoBrawlProperties = new GameProperties(GameHandler.AutomaticWinPolicy.MANUAL_CALLS_ONLY)
                 .setCanPlayersMoveDuringCountdown(false)

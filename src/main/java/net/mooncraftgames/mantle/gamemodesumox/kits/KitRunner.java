@@ -47,6 +47,27 @@ public class KitRunner extends Kit {
     }
 
     @Override
+    public Optional<Item> getKitHelmet() {
+        ItemHelmetLeather item = new ItemHelmetLeather();
+        item.setColor(255, 0, 0);
+        return Optional.of(item);
+    }
+
+    @Override
+    public Optional<Item> getKitChestplate() {
+        ItemChestplateLeather item = new ItemChestplateLeather();
+        item.setColor(0, 0, 255);
+        return Optional.of(item);
+    }
+
+    @Override
+    public Optional<Item> getKitLeggings() {
+        ItemLeggingsLeather item = new ItemLeggingsLeather();
+        item.setColor(0, 0, 255);
+        return Optional.of(item);
+    }
+
+    @Override
     public Optional<Item> getKitBoots() {
         return Optional.of(new ItemBootsGold());
     }
