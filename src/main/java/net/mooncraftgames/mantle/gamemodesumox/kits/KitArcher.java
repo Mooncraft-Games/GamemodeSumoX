@@ -48,7 +48,7 @@ public class KitArcher extends Kit {
 
     @Override
     public Item[] getHotbarItems() {
-        Item arrow =  new ItemBow().setCustomName(""+TextFormat.GOLD+TextFormat.BOLD+"Gilded Arrow");
+        Item arrow =  new ItemArrow().setCustomName(""+TextFormat.GOLD+TextFormat.BOLD+"Gilded Arrow");
         arrow.setCount(64);
 
         Item slapItem =  new ItemBow().setCustomName(""+TextFormat.AQUA+TextFormat.BOLD+"Olly's Longbow");
@@ -90,7 +90,7 @@ public class KitArcher extends Kit {
 
     @Override
     public Optional<Class<? extends ExtendedKit>> getExtendedKitFeatures() {
-        return super.getExtendedKitFeatures();
+        return Optional.of(KitArcherExtended.class);
     }
 
     public static class KitArcherExtended extends ExtendedKit {
@@ -107,6 +107,7 @@ public class KitArcher extends Kit {
 
                     if(a instanceof Player){
                         Player attacker = (Player) a;
+                        event.setCancelled(true);
 
                         if(getGameHandler().getGameBehaviors() instanceof GBehaveSumoBase){
                             GBehaveSumoBase base = (GBehaveSumoBase) getGameHandler().getGameBehaviors();
