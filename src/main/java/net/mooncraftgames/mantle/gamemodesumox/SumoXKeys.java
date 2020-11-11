@@ -14,4 +14,11 @@ public final class SumoXKeys {
 
     public static final String NBT_POWERUP_PE_TIE = "tiedToPE";
     public static final String NBT_POWERUP_ITEM_TIE = "tiedToPowerup";
+
+
+    public static final String KIT_PROP_TAKEN_KB_MULT = "kb_taken_mult";
+    public static final String KIT_PROP_GIVEN_KB_MULT = "kb_given_mult";
+    public static final String KIT_PROP_SPEED_MULT = "speed_mult";
+    public static final String KIT_PROP_RECALL_TIME = "recall_time";
+
 }

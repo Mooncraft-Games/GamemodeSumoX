@@ -1,16 +1,21 @@
 package net.mooncraftgames.mantle.gamemodesumox.kits;
 
 import cn.nukkit.command.data.CommandParameter;
-import cn.nukkit.item.Item;
-import cn.nukkit.item.ItemFish;
-import cn.nukkit.item.ItemHelmetDiamond;
+import cn.nukkit.item.*;
 import cn.nukkit.item.enchantment.Enchantment;
 import cn.nukkit.utils.TextFormat;
+import net.mooncraftgames.mantle.gamemodesumox.SumoXConstants;
+import net.mooncraftgames.mantle.gamemodesumox.SumoXKeys;
 import net.mooncraftgames.mantle.newgamesapi.kits.Kit;
 
 import java.util.Optional;
 
 public class KitSlapper extends Kit {
+
+    @Override
+    public void onRegister() {
+        registerProperty(SumoXKeys.KIT_PROP_GIVEN_KB_MULT, String.valueOf(1.2f));
+    }
 
     @Override
     public String getKitID() {
@@ -24,7 +29,7 @@ public class KitSlapper extends Kit {
 
     @Override
     public int getCost() {
-        return 100;
+        return 0;
     }
 
     @Override
@@ -42,7 +47,17 @@ public class KitSlapper extends Kit {
     }
 
     @Override
-    public Optional<Item> getKitHelmet() {
-        return Optional.of(new ItemHelmetDiamond());
+    public Optional<Item> getKitChestplate() {
+        ItemChestplateLeather item = new ItemChestplateLeather();
+        item.setColor(255, 255, 255);
+        return Optional.of(item);
     }
+
+    @Override
+    public Optional<Item> getKitLeggings() {
+        ItemLeggingsLeather item = new ItemLeggingsLeather();
+        item.setColor(255, 0, 0);
+        return Optional.of(item);
+    }
+
 }
