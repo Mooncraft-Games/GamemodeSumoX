@@ -378,8 +378,6 @@ public class GBehaveSumoBase extends GameBehavior {
                 double deltaZ = player.getZ() - event.getDamager().getZ();
                 // If panic: base * (multiplier ^ time elapsed in panic zone)
                 double knockbackValue = isInPanicMode ? Math.min(SumoXConstants.KNOCKBACK_BASE * (Math.pow(SumoXConstants.PANIC_KNOCKBACK_MULTIPLIER, (getTimeElapsed()-Math.floor(maxTimer*(1-SumoXConstants.BASE_TIMER_PANIC_ZONE))))), SumoXConstants.KNOCKBACK_BASE*5) : SumoXConstants.KNOCKBACK_BASE;
-                SumoX.getPlgLogger().debug(String.format("%s * (%s ^ (%s - (%s * %s)))", SumoXConstants.KNOCKBACK_BASE, SumoXConstants.PANIC_KNOCKBACK_MULTIPLIER, getTimeElapsed(), maxTimer, SumoXConstants.BASE_TIMER_PANIC_ZONE));
-
                 player.knockBack(event.getDamager(), 0, deltaX, deltaZ, knockbackValue);
             }
         }
