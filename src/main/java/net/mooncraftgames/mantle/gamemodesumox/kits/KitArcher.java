@@ -23,6 +23,7 @@ public class KitArcher extends Kit {
         registerProperty(SumoXKeys.KIT_PROP_GIVEN_KB_MULT, String.valueOf(0.6f));
         registerProperty(SumoXKeys.KIT_PROP_TAKEN_KB_MULT, String.valueOf(1.2f));
         registerProperty(SumoXKeys.KIT_PROP_SPEED_MULT, String.valueOf(1.2f));
+        registerProperty(SumoXKeys.KIT_PROP_LEAP_BONUS_WEIGHT, String.valueOf(40)); //Triple
     }
 
     @Override

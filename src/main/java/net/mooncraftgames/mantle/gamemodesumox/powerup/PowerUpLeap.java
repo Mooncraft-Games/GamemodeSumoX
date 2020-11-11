@@ -6,8 +6,11 @@ import cn.nukkit.level.Sound;
 import cn.nukkit.math.Vector3;
 import cn.nukkit.math.Vector3f;
 import cn.nukkit.potion.Effect;
+import net.mooncraftgames.mantle.gamemodesumox.SumoUtil;
 import net.mooncraftgames.mantle.gamemodesumox.SumoXConstants;
+import net.mooncraftgames.mantle.gamemodesumox.SumoXKeys;
 import net.mooncraftgames.mantle.newgamesapi.game.GameHandler;
+import net.mooncraftgames.mantle.newgamesapi.kits.Kit;
 
 public class PowerUpLeap extends PowerUp {
 
@@ -43,6 +46,15 @@ public class PowerUpLeap extends PowerUp {
     @Override
     public int getWeight() {
         return 20;
+    }
+
+    @Override
+    public int getBonusWeight(PowerUpContext context) {
+        Kit kit = gameHandler.getAppliedSessionKits().get(context.getPlayer());
+        if(kit != null){
+            return SumoUtil.StringToInt(kit.getProperty(SumoXKeys.KIT_PROP_LEAP_BONUS_WEIGHT).orElse(null)).orElse(0);
+        }
+        return 0;
     }
 
     @Override

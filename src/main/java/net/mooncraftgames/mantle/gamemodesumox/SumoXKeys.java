@@ -22,4 +22,7 @@ public final class SumoXKeys {
     public static final String KIT_PROP_SPEED_MULT = "speed_mult";
     public static final String KIT_PROP_RECALL_TIME = "recall_time";
 
+    public static final String KIT_PROP_RECALL_BONUS_WEIGHT = "recall_bonus";
+    public static final String KIT_PROP_LEAP_BONUS_WEIGHT = "leap_bonus";
+
 }
