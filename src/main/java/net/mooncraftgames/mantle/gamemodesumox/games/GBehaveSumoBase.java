@@ -1,6 +1,7 @@
 package net.mooncraftgames.mantle.gamemodesumox.games;
 
 import cn.nukkit.Player;
+import cn.nukkit.entity.Entity;
 import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.EventPriority;
 import cn.nukkit.event.entity.EntityDamageByEntityEvent;
@@ -373,14 +374,18 @@ public class GBehaveSumoBase extends GameBehavior {
             if(getSessionHandler().getPlayers().contains(player)){
                 event.setCancelled(true);
 
-                //I have no clue what this does. EntityLiving#attack() uses it though sooo...
-                double deltaX = player.getX() - event.getDamager().getX();
-                double deltaZ = player.getZ() - event.getDamager().getZ();
-                // If panic: base * (multiplier ^ time elapsed in panic zone)
-                double knockbackValue = isInPanicMode ? Math.min(SumoXConstants.KNOCKBACK_BASE * (Math.pow(SumoXConstants.PANIC_KNOCKBACK_MULTIPLIER, (getTimeElapsed()-Math.floor(maxTimer*(1-SumoXConstants.BASE_TIMER_PANIC_ZONE))))), SumoXConstants.KNOCKBACK_BASE*5) : SumoXConstants.KNOCKBACK_BASE;
-                player.knockBack(event.getDamager(), 0, deltaX, deltaZ, knockbackValue);
+                doKnockback(player, event.getDamager(), SumoXConstants.KNOCKBACK_BASE);
+
             }
         }
+    }
+
+    public void doKnockback(Player victim, Entity target, double baseKB) {
+        double deltaX = victim.getX() - target.getX();
+        double deltaZ = victim.getZ() - target.getZ();
+        // If panic: base * (multiplier ^ time elapsed in panic zone)
+        double knockbackValue = isInPanicMode ? Math.min(baseKB * (Math.pow(SumoXConstants.PANIC_KNOCKBACK_MULTIPLIER, (getTimeElapsed()-Math.floor(maxTimer*(1-SumoXConstants.BASE_TIMER_PANIC_ZONE))))), baseKB*5) : baseKB;
+        victim.knockBack(target, 0, deltaX, deltaZ, knockbackValue);
     }
 
 }
