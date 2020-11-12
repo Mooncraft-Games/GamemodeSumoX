@@ -152,12 +152,18 @@ public class GBehaveSumoBase extends GameBehavior {
         if (b != null){
             b.destroy();
         }
+
         ScoreboardDisplay display = scoreboards.remove(player);
         if(display != null){
+            ArrayList<DisplayEntry> entries = scoreboardEntries.remove(player);
+            if(entries != null){
+                for(DisplayEntry entry: entries){
+                    display.removeEntry(entry);
+                }
+            }
+
             display.getScoreboard().hideFor(player);
         }
-        //TODO: Clear displaylines on leave for both NGAPI hub + this.
-        if()
         player.clearTitle();
     }
 
