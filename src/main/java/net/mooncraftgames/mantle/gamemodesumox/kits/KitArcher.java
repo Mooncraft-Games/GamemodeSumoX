@@ -4,10 +4,12 @@ import cn.nukkit.Player;
 import cn.nukkit.entity.Entity;
 import cn.nukkit.entity.projectile.EntityArrow;
 import cn.nukkit.event.EventHandler;
+import cn.nukkit.event.entity.EntityDamageByChildEntityEvent;
 import cn.nukkit.event.entity.EntityDamageByEntityEvent;
 import cn.nukkit.item.*;
 import cn.nukkit.item.enchantment.Enchantment;
 import cn.nukkit.utils.TextFormat;
+import net.mooncraftgames.mantle.gamemodesumox.SumoUtil;
 import net.mooncraftgames.mantle.gamemodesumox.SumoXConstants;
 import net.mooncraftgames.mantle.gamemodesumox.SumoXKeys;
 import net.mooncraftgames.mantle.gamemodesumox.games.GBehaveSumoBase;
@@ -21,6 +23,7 @@ public class KitArcher extends Kit {
     @Override
     public void onRegister() {
         registerProperty(SumoXKeys.KIT_PROP_GIVEN_KB_MULT, String.valueOf(0.6f));
+        registerProperty(SumoXKeys.KIT_PROP_GIVEN_PROJECTILE_KB_MULT, String.valueOf(1.0f));
         registerProperty(SumoXKeys.KIT_PROP_TAKEN_KB_MULT, String.valueOf(1.2f));
         registerProperty(SumoXKeys.KIT_PROP_SPEED_MULT, String.valueOf(1.2f));
         registerProperty(SumoXKeys.KIT_PROP_LEAP_BONUS_WEIGHT, String.valueOf(40)); //Triple
@@ -96,24 +99,34 @@ public class KitArcher extends Kit {
     public static class KitArcherExtended extends ExtendedKit {
 
         @EventHandler
-        public void onDamage(EntityDamageByEntityEvent event){
+        public void onDamage(EntityDamageByChildEntityEvent event){
 
             if(event.getEntity() instanceof Player){
                 Player victim = (Player) event.getEntity();
 
-                if(getGameHandler().getPlayers().contains(victim) && event.getDamager() instanceof EntityArrow){
-                    EntityArrow arrow = (EntityArrow) event.getDamager();
-                    Entity a = arrow.shootingEntity;
+                if(getGameHandler().getPlayers().contains(victim) && event.getChild() instanceof EntityArrow){
+                    EntityArrow arrow = (EntityArrow) event.getChild();
+                    Entity a = event.getDamager();
 
                     if(a instanceof Player){
                         Player attacker = (Player) a;
                         event.setCancelled(true);
 
+                        double attackModifier = 1.0f;
+
+                        if(event.getDamager() instanceof Player) {
+                            Player p = (Player) event.getDamager();
+                            Kit attackerkit = getGameHandler().getAppliedSessionKits().get(p);
+                            if (attackerkit != null) {
+                                attackModifier = SumoUtil.StringToFloat(attackerkit.getProperty(SumoXKeys.KIT_PROP_GIVEN_PROJECTILE_KB_MULT).orElse(null)).orElse(1.0f);
+                            }
+                        }
+
                         if(getGameHandler().getGameBehaviors() instanceof GBehaveSumoBase){
                             GBehaveSumoBase base = (GBehaveSumoBase) getGameHandler().getGameBehaviors();
-                            base.doKnockback(victim, attacker, SumoXConstants.KNOCKBACK_BASE);
+                            base.doKnockback(victim, attacker, SumoXConstants.KNOCKBACK_BASE, attackModifier);
                         } else {
-                            GBehaveSumoBase.applyKnockback(victim, attacker, SumoXConstants.KNOCKBACK_BASE);
+                            GBehaveSumoBase.applyKnockback(victim, attacker, SumoXConstants.KNOCKBACK_BASE * attackModifier);
                         }
                     }
                 }
