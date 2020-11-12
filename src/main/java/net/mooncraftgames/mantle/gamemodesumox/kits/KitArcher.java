@@ -51,8 +51,9 @@ public class KitArcher extends Kit {
 
     @Override
     public Item[] getHotbarItems() {
-        Item arrow =  new ItemArrow().setCustomName(""+TextFormat.GOLD+TextFormat.BOLD+"Gilded Arrow");
-        arrow.setCount(64);
+        Item arrow =  new ItemArrow();
+        //arrow.setCustomName(""+TextFormat.GOLD+TextFormat.BOLD+"Gilded Arrow");
+        //arrow.setCount(64);
 
         Item slapItem =  new ItemBow().setCustomName(""+TextFormat.AQUA+TextFormat.BOLD+"Olly's Longbow");
         slapItem.addEnchantment(Enchantment.get(Enchantment.ID_BOW_INFINITY).setLevel(1));
