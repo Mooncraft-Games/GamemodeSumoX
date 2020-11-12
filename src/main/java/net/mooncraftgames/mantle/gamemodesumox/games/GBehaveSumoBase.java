@@ -113,7 +113,7 @@ public class GBehaveSumoBase extends GameBehavior {
             display.setSortOrder(SortOrder.DESCENDING);
             scoreboards.put(player, display);
             ScoreboardAPI.setScoreboard(player, s);
-            updateScoreboards(player);
+            getSessionHandler().getGameScheduler().registerGameTask(() -> updateScoreboards(player), 2, 0);
         }
     }
 
