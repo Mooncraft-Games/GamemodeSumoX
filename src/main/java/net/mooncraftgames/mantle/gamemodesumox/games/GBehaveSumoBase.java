@@ -5,6 +5,7 @@ import cn.nukkit.entity.Entity;
 import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.EventPriority;
 import cn.nukkit.event.entity.EntityDamageByEntityEvent;
+import cn.nukkit.event.entity.EntityDamageEvent;
 import cn.nukkit.event.player.PlayerToggleSprintEvent;
 import cn.nukkit.level.Sound;
 import cn.nukkit.utils.BlockColor;
@@ -155,6 +156,8 @@ public class GBehaveSumoBase extends GameBehavior {
         if(display != null){
             display.getScoreboard().hideFor(player);
         }
+        //TODO: Clear displaylines on leave for both NGAPI hub + this.
+        if()
         player.clearTitle();
     }
 
@@ -369,37 +372,38 @@ public class GBehaveSumoBase extends GameBehavior {
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onDamage(EntityDamageByEntityEvent event){
-        if(event.getEntity() instanceof Player && event.getDamager() instanceof Player){
+        if(event.getEntity() instanceof Player && event.getDamager() instanceof Player && event.getCause() != EntityDamageEvent.DamageCause.CONTACT){
             Player player = (Player) event.getEntity();
             if(getSessionHandler().getPlayers().contains(player)){
                 event.setCancelled(true);
 
-                doKnockback(player, event.getDamager(), SumoXConstants.KNOCKBACK_BASE);
+                double attackModifier = 1.0f;
+
+                if(event.getDamager() instanceof Player) {
+                    Player p = (Player) event.getDamager();
+                    Kit attackerkit = getSessionHandler().getAppliedSessionKits().get(p);
+                    if (attackerkit != null) {
+                        attackModifier = SumoUtil.StringToFloat(attackerkit.getProperty(SumoXKeys.KIT_PROP_GIVEN_KB_MULT).orElse(null)).orElse(1.0f);
+                    }
+                }
+
+                doKnockback(player, event.getDamager(), SumoXConstants.KNOCKBACK_BASE, attackModifier);
 
             }
         }
     }
 
-    public void doKnockback(Player victim, Entity attacker, double baseKB) {
+    public void doKnockback(Player victim, Entity attacker, double baseKB, double kitDamageModifier) {
         // If panic: base * (multiplier ^ time elapsed in panic zone)
 
         float victimModifier = 1.0f;
-        float attackModifier = 1.0f;
 
         Kit victimkit = getSessionHandler().getAppliedSessionKits().get(victim);
         if(victimkit != null){
             victimModifier = SumoUtil.StringToFloat(victimkit.getProperty(SumoXKeys.KIT_PROP_TAKEN_KB_MULT).orElse(null)).orElse(1.0f);
         }
 
-        if(attacker instanceof Player) {
-            Player p = (Player) attacker;
-            Kit attackerkit = getSessionHandler().getAppliedSessionKits().get(p);
-            if (attackerkit != null) {
-                attackModifier = SumoUtil.StringToFloat(attackerkit.getProperty(SumoXKeys.KIT_PROP_GIVEN_KB_MULT).orElse(null)).orElse(1.0f);
-            }
-        }
-
-        double baseKBValue = baseKB * victimModifier * attackModifier;
+        double baseKBValue = baseKB * victimModifier * kitDamageModifier;
         double knockbackValue = isInPanicMode ? Math.min(baseKBValue * (Math.pow(SumoXConstants.PANIC_KNOCKBACK_MULTIPLIER, (getTimeElapsed()-Math.floor(maxTimer*(1-SumoXConstants.BASE_TIMER_PANIC_ZONE))))), baseKBValue*5) : baseKBValue;
         applyKnockback(victim, attacker, knockbackValue);
     }
