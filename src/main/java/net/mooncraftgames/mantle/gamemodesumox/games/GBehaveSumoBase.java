@@ -353,10 +353,10 @@ public class GBehaveSumoBase extends GameBehavior {
 
     @EventHandler
     public void onSprintChange(PlayerToggleSprintEvent event){
-        if(getSessionHandler().getPlayers().contains(event.getPlayer()) && getSessionHandler().getGameState() == GameHandler.GameState.MAIN_LOOP) sprintChangeEvent(event.getPlayer());
+        if(getSessionHandler().getPlayers().contains(event.getPlayer()) && getSessionHandler().getGameState() == GameHandler.GameState.MAIN_LOOP) sprintChangeEvent(event.getPlayer(), event.isSprinting());
     }
 
-    protected void sprintChangeEvent(Player player){
+    protected void sprintChangeEvent(Player player, boolean sprint){
         float kitModifier = 1f;
         Kit kit = getSessionHandler().getAppliedSessionKits().get(player);
 
@@ -369,7 +369,7 @@ public class GBehaveSumoBase extends GameBehavior {
             }
         }
 
-        if(player.isSprinting()){
+        if(sprint){
             player.setMovementSpeed((SumoXConstants.VANILLA_BASE_SPEED * kitModifier * SumoXConstants.VANILLA_SPRINT_SPEED_MULTIPLIER) * gameSpeedMultiplier); //Vanilla is a 30% increase
         } else {
             player.setMovementSpeed(SumoXConstants.VANILLA_BASE_SPEED * kitModifier * gameSpeedMultiplier);
