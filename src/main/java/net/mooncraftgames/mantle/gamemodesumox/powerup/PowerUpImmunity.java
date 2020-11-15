@@ -112,7 +112,7 @@ public final class PowerUpImmunity extends PowerUp implements Listener {
         return true;
     }
 
-    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = false)
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = false)
     public void getJellyBaboon(EntityDamageByEntityEvent event){
         if(event.getEntity() instanceof Player && event.getDamager() instanceof Player){
             Player player = (Player) event.getEntity();

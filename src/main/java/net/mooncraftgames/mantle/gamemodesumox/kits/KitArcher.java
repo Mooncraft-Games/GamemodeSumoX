@@ -99,7 +99,7 @@ public class KitArcher extends Kit {
 
     public static class KitArcherExtended extends ExtendedKit {
 
-        @EventHandler
+        @EventHandler(ignoreCancelled = true)
         public void onDamage(EntityDamageByChildEntityEvent event){
 
             if(event.getEntity() instanceof Player){
