@@ -39,12 +39,35 @@ public class SumoX extends PluginBase {
                 .setGuidelinePlayers(8)
                 .setMaximumPlayers(32);
 
+        GameProperties sumoBrawlTourneyProperties = new GameProperties(GameHandler.AutomaticWinPolicy.MANUAL_CALLS_ONLY)
+                .setCanPlayersMoveDuringCountdown(false)
+                .setCanWorldBeManipulated(false)
+                .setDefaultCountdownLength(10)
+                .setMinimumPlayers(1)
+                .setGuidelinePlayers(1)
+                .setMaximumPlayers(4)
+                .setTourneyGamemode(true);
+        GameProperties sumoMegaTourneyProperties = new GameProperties(GameHandler.AutomaticWinPolicy.MANUAL_CALLS_ONLY)
+                .setCanPlayersMoveDuringCountdown(false)
+                .setCanWorldBeManipulated(false)
+                .setDefaultCountdownLength(10)
+                .setMinimumPlayers(1)
+                .setGuidelinePlayers(1)
+                .setMaximumPlayers(32)
+                .setTourneyGamemode(true);
+
         GameID sumoBrawlID = new GameID("sumox_brawl", "sumobrawl", "Sumo X Brawl", "The all new Sumo! Slap up to 4 players off the platform till they run out of lives! The last standing wins each round!", "sumox", new String[]{"sumo", "sumox"}, 2, sumoBrawlProperties, GBehaveSumoBase.class);
         GameID sumoMegaID = new GameID("sumox_mega", "sumomega", "Sumo X Mega", "The all new Sumo! Slap up to 32 players off the platform till they run out of lives! The last standing wins each round!", "sumox", new String[]{"sumo", "sumox"}, 2, sumoMegaProperties, GBehaveSumoBase.class);
+
+        GameID tourneySumoBrawlID = new GameID("tourney_sumox_brawl", "sumobrawl", "Sumo X Mega Tourney", "The all new Sumo! Slap up to 4 players off the platform till they run out of lives! The last standing wins each round! Kills, Wins, and the top 3 positions are worth points!", "sumox", new String[]{"sumo", "sumox"}, 2, sumoBrawlTourneyProperties, GBehaveSumoBase.class);
+        GameID tourneySumoMegaID = new GameID("tourney_sumox_mega", "sumomega", "Sumo X Mega Tourney", "The all new Sumo! Slap up to 32 players off the platform till they run out of lives! The last standing wins each round! Kills, Wins, and the top 3 positions are worth points!", "sumox", new String[]{"sumo", "sumox"}, 2, sumoMegaTourneyProperties, GBehaveSumoBase.class);
+
 
         GameRegistry.get()
                 .registerGame(sumoBrawlID)
                 .registerGame(sumoMegaID)
+                .registerGame(tourneySumoBrawlID)
+                .registerGame(tourneySumoMegaID)
         ;
     }
 
