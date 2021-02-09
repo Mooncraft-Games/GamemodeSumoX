@@ -59,3 +59,13 @@ Within the MapID file of every map, properties can be set within sections such a
 |`min_powerup_spawn_time` |Integer |20            |The minimum amount of seconds between powerup respawns.     |
 |`var_powerup_spawn_time` |Integer |20            |The amount of seconds the powerup respawn time can vary by. |
 |`base_game_speed`        |Float   |1.0           |A multiplier that changes how quick a player can move.      |
+
+
+### Panic Mode + Other components
+Panic Mode is an event that triggers within the last third of a sumo game (Last 60 seconds if using default timer value) in order to make the difficulty harder. As it progresses, it gradually increases the knockback recieved by all players by 1.02x every second. This leads to eliminations being dealt in 1 hit by the end of the game! 
+
+Furthermore, there are constants for unimplemented anti-cheese measures such as:
+ - **Tripping:** Players take random knockback after a while if they're not hitting other people.
+ - **Fragile:** Players will take more KB if they run, thus increasing their timer is discouraged.
+
+These concepts were omitted from the final game as they were a bit to aggressive and proceeded by the current Panic Mode event. In the case that people find that players are dragging out game timers, it may be an idea to try implementing these measures as a last resort. Feel free to make a pull request if so. 
