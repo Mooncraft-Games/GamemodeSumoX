@@ -1,4 +1,7 @@
-# GamemodeSumoX
+# GamemodeSumoX: A Minecraft(Nukkit) Minigame
+![Badge: Java](https://img.shields.io/badge/Java-8-red?style=for-the-badge)
+![Dependency: Commons](https://img.shields.io/badge/Depend-NGAPI:_1.2-orange?style=for-the-badge)
+
 A revised version of the original Sumo gamemode which was developed to test the original builds of NGAPI 1.0. This version adds major additions to gameplay such as powerups, a variety of kits, and "Panic Mode" to speed up the game if it drags on! The latest version of this game is now playable on the Mooncraft Games minigame server!
 
 If you want to test it, you can find it in the duels lobby at:
