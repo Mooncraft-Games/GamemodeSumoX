@@ -23,10 +23,23 @@ Furthermore, to add more spice to the game, powerups spots were added as point e
 
 Powerups could either be forcefully activated on pickup or activated by an item given to the player on pickup. Here's a list of all the powerups currently found within SumoX 1.0:
 
-|Name            |Auto-Activate? | Summary                          |
-|----------------|---------------|----------------------------------|
-|Blindness       | ✔             |Makes the user blind for 10 seconds.|
-|Immunity        | ✔             |Makes the user immune to KB for 7 seconds.|
-|KB Aura (Kaboom)| ❌            |Knocks any players within a 4 block radius of the user away from the user.|
+|Name            |Auto-Activate? | Summary                                                                                 |
+|----------------|---------------|-----------------------------------------------------------------------------------------|
+|Blindness       | ✔             |Makes the user blind for 10 seconds.                                                     |
+|Immunity        | ✔             |Makes the user immune to KB for 7 seconds.                                               |
+|KB Aura (Kaboom)| ❌            |Knocks any players within a 4 block radius of the user away from the user.               |
 |Leap            | ❌            |Propels the user quickly in the direction they are facing (Always moving upward with Y.) |
-|Recall          | ❌            |Rewinds user to their position 5 seconds ago. Kits can modify this time. |
+|Recall          | ❌            |Rewinds user to their position 5 seconds ago. Kits can modify this time.                 |
+
+
+### Kits
+
+Kits were another upgrade that saw an upgrade from the original Sumo gamemode. In SumoX, 4 kits were implemented, each introducing a new approach to playing the game. Here's a list of each kit and their costs:
+
+|Name     |Cost (Coins) |Summary                                                                                      |
+|---------|-------------|---------------------------------------------------------------------------------------------|
+|Slapper  |0 (Default)  |1.2x multiplier on attacks. Otherwise the simplest kit of the game.                          |
+|Runner   |500          |1.5x quicker, takes 1.6x more knockback, and deals 0.8x knockback with hits. Weak but quick. |
+|Timelord |1000         |More likely to get recalls with an extended length of 10 seconds for recalls. Takes 1.2x more knockback and deals 0.9x knockback with hits. A recovery-focused kit.|
+|Archer   |1000         |Armed with a bow which deals knockback on arrow hits along with an 3x chance of getting a leap powerup. Melee KB dealt by the user is 0.6x the base. Furthermore, the kit takes 1.2x more KB.|
+
