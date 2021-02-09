@@ -43,3 +43,16 @@ Kits were another upgrade that saw an upgrade from the original Sumo gamemode. I
 |Timelord |1000         |More likely to get recalls with an extended length of 10 seconds for recalls. Takes 1.2x more knockback and deals 0.9x knockback with hits. A recovery-focused kit.|
 |Archer   |1000         |Armed with a bow which deals knockback on arrow hits along with an 3x chance of getting a leap powerup. Melee KB dealt by the user is 0.6x the base. Furthermore, the kit takes 1.2x more KB.|
 
+
+### Map Properties
+
+Within the MapID file of every map, properties can be set within sections such as `strings`, `integers`, `floats`, and `switches`. Here are a few supported properties which can be edited on a per-map basis.
+
+|Property                 |Type    |Default Value |Description                                                 |
+|-------------------------|--------|--------------|------------------------------------------------------------|
+|`game_length`            |Integer |180           |Sets the length of the games timer.                         |
+|`respawn_seconds`        |Integer |5             |Sets the time to respawn after a life-loss.                 |
+|`lives`                  |Integer |3             |Sets the amount of lives a player spawns with.              |
+|`min_powerup_spawn_time` |Integer |20            |The minimum amount of seconds between powerup respawns.     |
+|`var_powerup_spawn_time` |Integer |20            |The amount of seconds the powerup respawn time can vary by. |
+|`base_game_speed`        |Float   |1.0           |A multiplier that changes how quick a player can move.      |
