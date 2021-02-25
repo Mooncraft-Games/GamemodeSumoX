@@ -32,7 +32,6 @@ public class GBehaveSumoBase extends GameBehavior {
 
     // Game Configurables - For game flavours.
     protected boolean isTimerEnabled = true;
-    protected boolean isTimerBarDisplayed = true;
     protected boolean isPanicModeAllowed = true;
     protected boolean arePowerUpsAllowed = true;
 
@@ -51,14 +50,6 @@ public class GBehaveSumoBase extends GameBehavior {
 
     protected float gameBaseSpeedMultiplier;
     protected float gameSpeedMultiplier;
-
-    protected HashMap<Player, DummyBossBar> bartimerBossbars;
-    protected TextFormat bartimerMainTextColour;
-    protected TextFormat bartimerSubTextColour;
-    protected BlockColor bartimerColour;
-
-    protected HashMap<Player, ScoreboardDisplay> scoreboards;
-    protected HashMap<Player, ArrayList<DisplayEntry>> scoreboardEntries;
 
     @Override
     public Team.GenericTeamBuilder[] getTeams() {
@@ -86,84 +77,24 @@ public class GBehaveSumoBase extends GameBehavior {
         this.gameBaseSpeedMultiplier = Math.max(getSessionHandler().getPrimaryMapID().getFloats().getOrDefault(SumoXKeys.FLOAT_BASE_GAME_SPEED, SumoXConstants.DEFAULT_BASE_GAME_SPEED), 0f);
         this.gameSpeedMultiplier = gameBaseSpeedMultiplier;
 
-        this.bartimerBossbars = new HashMap<>();
-        this.bartimerMainTextColour = TextFormat.BLUE;
-        this.bartimerSubTextColour = TextFormat.DARK_AQUA;
-        this.bartimerColour = BlockColor.BLUE_BLOCK_COLOR;
-
-        this.scoreboards = new HashMap<>();
-        this.scoreboardEntries = new HashMap<>();
-
-        String timebarText = getTimerbarText();
         for(Player player: getSessionHandler().getPlayers()){
             lifeTally.put(player, defaultTally);
-
-            DummyBossBar bar = new DummyBossBar.Builder(player)
-                    .color(bartimerColour)
-                    .length(100)
-                    .text(timebarText)
-                    .build();
-            player.createBossBar(bar);
-
-            DummyBossBar oldBar = bartimerBossbars.put(player, bar);
-            if(oldBar != null) oldBar.destroy();
-
-            Scoreboard s = ScoreboardAPI.createScoreboard();
-            ScoreboardDisplay display = s.addDisplay(DisplaySlot.SIDEBAR, "sumo-"+ Utility.generateUniqueToken(6, 4), String.format("%s%sSUMO %s%sBRAWL", TextFormat.GOLD, TextFormat.BOLD, TextFormat.RED, TextFormat.BOLD));
-            display.setSortOrder(SortOrder.DESCENDING);
-            scoreboards.put(player, display);
-            ScoreboardAPI.setScoreboard(player, s);
-            getSessionHandler().getGameScheduler().registerGameTask(() -> updateScoreboards(player), 2, 0);
         }
     }
 
     @Override
     public void registerGameSchedulerTasks() {
-        getSessionHandler().getGameScheduler().registerGameTask(this::handleTimerTick, 20, 20);
+        getSessionHandler().getGameScheduler().registerGameTask(this::scoreboardUpdateTick, 15, 15);
     }
 
     @Override
     public Optional<Team> onMidGameJoinEvent(Player player) {
-        getSessionHandler().getGameScheduler().registerGameTask(() -> {
-            DummyBossBar bar = new DummyBossBar.Builder(player)
-                    .color(bartimerColour)
-                    .length(100)
-                    .text(getTimerbarText())
-                    .build();
-            player.createBossBar(bar);
-            bartimerBossbars.put(player, bar);
-        }, 1, 0);
-
         lifeTally.put(player, 0);
-
-        Scoreboard s = ScoreboardAPI.createScoreboard();
-        ScoreboardDisplay display = s.addDisplay(DisplaySlot.SIDEBAR, "sumo-"+ Utility.generateUniqueToken(6, 4), String.format("%s%sSUMO %s%sBRAWL", TextFormat.GOLD, TextFormat.BOLD, TextFormat.RED, TextFormat.BOLD));
-        display.setSortOrder(SortOrder.DESCENDING);
-        scoreboards.put(player, display);
-        ScoreboardAPI.setScoreboard(player, s);
-        updateScoreboards(player);
-
         return Optional.empty();
     }
 
     @Override
     public void onPlayerLeaveGame(Player player) {
-        DummyBossBar b = bartimerBossbars.remove(player);
-        if (b != null){
-            b.destroy();
-        }
-
-        ScoreboardDisplay display = scoreboards.remove(player);
-        if(display != null){
-            ArrayList<DisplayEntry> entries = scoreboardEntries.remove(player);
-            if(entries != null){
-                for(DisplayEntry entry: entries){
-                    display.removeEntry(entry);
-                }
-            }
-
-            display.getScoreboard().hideFor(player);
-        }
         player.clearTitle();
     }
 
@@ -182,20 +113,23 @@ public class GBehaveSumoBase extends GameBehavior {
     public void handleDeath(GamePlayerDeathEvent event){
         Player player = event.getDeathCause().getVictim();
         int newVal = lifeTally.getOrDefault(player, 1) - 1;
+
         if(newVal <= 0){
             player.sendTitle(SumoXStrings.DEAD_TITLE, SumoXStrings.DEAD_SUBTITLE, 5, 50, 5);
             event.setDeathState(GamePlayerDeathEvent.DeathState.MOVE_TO_DEAD_SPECTATORS);
+
         } else {
             int respawnTime = getSessionHandler().getPrimaryMapID().getIntegers().getOrDefault(SumoXKeys.INT_RESPAWN_SECS, SumoXConstants.DEFAULT_RESPAWN_SECONDS);
+
             if(respawnTime < 1){
                 event.setDeathState(GamePlayerDeathEvent.DeathState.INSTANT_RESPAWN);
+
             } else {
                 event.setDeathState(GamePlayerDeathEvent.DeathState.TIMED_RESPAWN);
                 event.setRespawnSeconds(respawnTime);
             }
         }
         lifeTally.put(player, newVal);
-        for(Player p : getSessionHandler().getPlayers()) updateScoreboards(p);
     }
 
     protected void handleTimerTick(){
@@ -216,23 +150,7 @@ public class GBehaveSumoBase extends GameBehavior {
                     getSessionHandler().getGameScheduler().registerGameTask(this::sendPanicWarning, 0);
                     getSessionHandler().getGameScheduler().registerGameTask(this::sendPanicWarning, 40);
                     getSessionHandler().getGameScheduler().registerGameTask(this::sendPanicWarning, 80);
-
-                    bartimerMainTextColour = TextFormat.RED;
-                    bartimerSubTextColour = TextFormat.GOLD;
-                    bartimerColour = BlockColor.RED_BLOCK_COLOR;
                 }
-            }
-        }
-
-        if(isTimerBarDisplayed){
-            String timebarText = getTimerbarText();
-            float timebarValue = (((float) roundTimer) / maxTimer) * 100;
-
-            for(DummyBossBar bossBar: bartimerBossbars.values()){
-                bossBar.setLength(timebarValue);
-                bossBar.setText(timebarText);
-                bossBar.setColor(bartimerColour);
-                bossBar.reshow();
             }
         }
 
@@ -268,74 +186,12 @@ public class GBehaveSumoBase extends GameBehavior {
         }
     }
 
-    // Fixed to 5 slots. If updating size, account for this.
-    protected void updateScoreboards(Player player){
-        ScoreboardDisplay display = scoreboards.get(player);
-
-        if(scoreboardEntries.containsKey(player)){
-            for(DisplayEntry entry: scoreboardEntries.get(player)){
-                display.removeEntry(entry);
-            }
-        }
-
-        ArrayList<DisplayEntry> entryTally = new ArrayList<>();
-
-        entryTally.add(display.addLine(" ", 15));
-
-        ArrayList<Map.Entry<Player, Integer>> topScores = new ArrayList<>();
-
-        for(Map.Entry<Player, Integer> e: lifeTally.entrySet()){
-            if(e.getValue() < 1){
-                continue;
-            }
-            boolean isAdded = false;
-            for(int i = 0; i < topScores.size(); i++){
-                if(topScores.get(i).getValue() <= e.getValue()){
-                    topScores.add(i, e);
-                    isAdded = true;
-                    break;
-                }
-            }
-            if(!isAdded){
-                topScores.add(e);
-            }
-        }
-
-        int liveListIndex = 0;
-        for(int i = 14; i > 9; i--){
-            if(topScores.size() > liveListIndex){
-                entryTally.add(display.addLine(getLivesText(topScores.get(liveListIndex).getKey().getDisplayName(), topScores.get(liveListIndex).getValue().toString()), i));
-                liveListIndex++;
-            } else {
-                entryTally.add(display.addLine(String.format("%s%s???"+buildWhitespace(i-10), TextFormat.DARK_GRAY, TextFormat.BOLD), i));
-            }
-        }
-
-        entryTally.add(display.addLine(String.format("%s%s...", TextFormat.GRAY, TextFormat.BOLD), 9));
-        entryTally.add(display.addLine(getLivesText("You", lifeTally.get(player).toString()), 8));
-        entryTally.add(display.addLine("  ", 7));
-        scoreboardEntries.put(player, entryTally);
-    }
-
-    protected String getTimerbarText(){
-        return String.format("\n\n%s%sTime Remaining: %s%s%s", bartimerMainTextColour, TextFormat.BOLD, bartimerSubTextColour, TextFormat.BOLD, roundTimer);
-    }
-
-    protected String getLivesText(String name, String lives){
-        return String.format("%s%s%s: %s%s%s %s%sLives", TextFormat.GOLD, TextFormat.BOLD, name, TextFormat.RED, TextFormat.BOLD, lives, TextFormat.DARK_RED, TextFormat.BOLD);
-    }
-
-    public String buildWhitespace(int quantity){
-        StringBuilder sb = new StringBuilder();
-        for(int i = 0; i < quantity; i++){
-            sb.append(" ");
-        }
-        return sb.toString();
+    protected void scoreboardUpdateTick(){
+        //TODO: Reimplement
     }
 
     public int getTimeElapsed() { return maxTimer-roundTimer; }
     public boolean isTimerEnabled() { return isTimerEnabled; }
-    public boolean isTimerBarDisplayed() { return isTimerBarDisplayed; }
     public boolean isPanicModeAllowed() { return isPanicModeAllowed; }
     public boolean arePowerUpsAllowed() { return arePowerUpsAllowed; }
 
@@ -350,6 +206,8 @@ public class GBehaveSumoBase extends GameBehavior {
 
 
     public void setGameSpeedMultiplier(float gameSpeedMultiplier) { this.gameSpeedMultiplier = gameSpeedMultiplier; }
+
+
 
     @EventHandler
     public void onSprintChange(PlayerToggleSprintEvent event){
@@ -413,6 +271,8 @@ public class GBehaveSumoBase extends GameBehavior {
         double knockbackValue = isInPanicMode ? Math.min(baseKBValue * (Math.pow(SumoXConstants.PANIC_KNOCKBACK_MULTIPLIER, (getTimeElapsed()-Math.floor(maxTimer*(1-SumoXConstants.BASE_TIMER_PANIC_ZONE))))), baseKBValue*5) : baseKBValue;
         applyKnockback(victim, attacker, knockbackValue);
     }
+
+
 
     public static void applyKnockback(Player victim, Entity attacker, double fullKB) {
         double deltaX = victim.getX() - attacker.getX();
