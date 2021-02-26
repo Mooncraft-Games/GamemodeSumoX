@@ -15,14 +15,18 @@ import de.lucgameshd.scoreboard.api.ScoreboardAPI;
 import de.lucgameshd.scoreboard.network.*;
 import net.mooncraftgames.mantle.gamemodesumox.*;
 import net.mooncraftgames.mantle.gamemodesumox.games.pointentities.PETypeSumoXPowerUpSpot;
+import net.mooncraftgames.mantle.newgamesapi.NewGamesAPI1;
 import net.mooncraftgames.mantle.newgamesapi.Utility;
 import net.mooncraftgames.mantle.newgamesapi.game.GameBehavior;
 import net.mooncraftgames.mantle.newgamesapi.game.GameHandler;
 import net.mooncraftgames.mantle.newgamesapi.game.events.GamePlayerDeathEvent;
 import net.mooncraftgames.mantle.newgamesapi.kits.Kit;
+import net.mooncraftgames.mantle.newgamesapi.rewards.PlayerRewardsProfile;
+import net.mooncraftgames.mantle.newgamesapi.rewards.RewardsManager;
 import net.mooncraftgames.mantle.newgamesapi.team.Team;
 import net.mooncraftgames.mantle.newgamesapi.team.TeamPresets;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -186,9 +190,18 @@ public class GBehaveSumoBase extends GameBehavior {
         }
     }
 
-    protected void scoreboardUpdateTick(){
-        //TODO: Reimplement
+
+
+    public void scoreboardUpdateTick(){
+        for(Player player: getSessionHandler().getPlayers()) updateScoreboards(player);
     }
+
+    protected void updateScoreboards(Player player){
+        getSessionHandler().getScoreboardManager().setLine(player, 5, String.format("%s %s%s", Utility.ResourcePackCharacters.HEART_FULL, TextFormat.WHITE, lifeTally.getOrDefault(player, 0)));
+        getSessionHandler().getScoreboardManager().setLine(player, 9, String.format("%s %s%s", Utility.ResourcePackCharacters.TIME, isInPanicMode ? TextFormat.RED : TextFormat.WHITE, roundTimer));
+    }
+
+
 
     public int getTimeElapsed() { return maxTimer-roundTimer; }
     public boolean isTimerEnabled() { return isTimerEnabled; }
