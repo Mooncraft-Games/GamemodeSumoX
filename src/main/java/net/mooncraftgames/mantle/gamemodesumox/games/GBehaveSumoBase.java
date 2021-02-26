@@ -95,6 +95,7 @@ public class GBehaveSumoBase extends GameBehavior {
     @Override
     public void registerGameSchedulerTasks() {
         getSessionHandler().getGameScheduler().registerGameTask(this::scoreboardUpdateTick, 15, 15);
+        getSessionHandler().getGameScheduler().registerGameTask(this::handleTimerTick, 20, 20);
     }
 
     @Override
