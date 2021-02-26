@@ -292,6 +292,8 @@ public class GBehaveSumoBase extends GameBehavior {
 
         float victimModifier = 1.0f;
 
+        victim.getLevel().addSound(victim.getPosition(), Sound.GAME_PLAYER_HURT, 1f, 1f);
+
         Kit victimkit = getSessionHandler().getAppliedSessionKits().get(victim);
         if(victimkit != null){
             victimModifier = SumoUtil.StringToFloat(victimkit.getProperty(SumoXKeys.KIT_PROP_TAKEN_KB_MULT).orElse(null)).orElse(1.0f);
