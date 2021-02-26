@@ -55,6 +55,10 @@ public class GBehaveSumoBase extends GameBehavior {
     protected float gameBaseSpeedMultiplier;
     protected float gameSpeedMultiplier;
 
+    protected int initialPlayerCount;
+
+
+
     @Override
     public Team.GenericTeamBuilder[] getTeams() {
         return TeamPresets.FREE_FOR_ALL;
@@ -84,6 +88,8 @@ public class GBehaveSumoBase extends GameBehavior {
         for(Player player: getSessionHandler().getPlayers()){
             lifeTally.put(player, defaultTally);
         }
+
+        this.initialPlayerCount = getSessionHandler().getPlayers().size();
     }
 
     @Override
@@ -197,7 +203,17 @@ public class GBehaveSumoBase extends GameBehavior {
     }
 
     protected void updateScoreboards(Player player){
-        getSessionHandler().getScoreboardManager().setLine(player, 5, String.format("%s %s%s", Utility.ResourcePackCharacters.HEART_FULL, TextFormat.WHITE, lifeTally.getOrDefault(player, 0)));
+        int aliveCount = 0;
+
+        for(Integer v: lifeTally.values()){
+
+            if((v != null) && (v > 0)) {
+                aliveCount += 1;
+            }
+        }
+
+        getSessionHandler().getScoreboardManager().setLine(player, 3, String.format("%s %s%s", Utility.ResourcePackCharacters.HEART_FULL, TextFormat.WHITE, lifeTally.getOrDefault(player, 0)));
+        getSessionHandler().getScoreboardManager().setLine(player, 5, String.format("%s %s%s/%s", Utility.ResourcePackCharacters.MORE_PEOPLE, TextFormat.WHITE, aliveCount, initialPlayerCount));
         getSessionHandler().getScoreboardManager().setLine(player, 9, String.format("%s %s%s", Utility.ResourcePackCharacters.TIME, isInPanicMode ? TextFormat.RED : TextFormat.WHITE, roundTimer));
     }
 
