@@ -35,6 +35,7 @@ import net.mooncraftgames.mantle.newgamesapi.game.GameHandler;
 import net.mooncraftgames.mantle.newgamesapi.map.pointentities.PointEntityCallData;
 import net.mooncraftgames.mantle.newgamesapi.map.pointentities.PointEntityType;
 import net.mooncraftgames.mantle.newgamesapi.map.types.PointEntity;
+import net.mooncraftgames.mantle.newgamesapi.rewards.RewardChunk;
 import net.mooncraftgames.mantle.newgamesapi.team.Team;
 
 import java.util.ArrayList;
@@ -249,6 +250,9 @@ public class PETypeSumoXPowerUpSpot extends PointEntityType implements Listener 
                             if (getGameHandler().getGameBehaviors() instanceof GBehaveSumoBase) {
                                 PowerUpContext context = new PowerUpContext(attacker);
                                 event.setCancelled(true);
+
+                                getGameHandler().addRewardChunk(attacker, new RewardChunk("powerup", "Power-Up Pickup", 3, 0, 1));
+
                                 int selection = new Random().nextInt(maxWeight);
                                 int cumulativeWeightChecked = 1;
 
@@ -282,9 +286,7 @@ public class PETypeSumoXPowerUpSpot extends PointEntityType implements Listener 
 
             if(nbt.contains(SumoXKeys.NBT_POWERUP_ITEM_TIE) && !powerUpItemCooldowns.contains(event.getPlayer())){
                 powerUpItemCooldowns.add(event.getPlayer());
-                gameHandler.getGameScheduler().registerGameTask(() -> {
-                    powerUpItemCooldowns.remove(event.getPlayer());
-                }, 20);
+                gameHandler.getGameScheduler().registerGameTask(() -> powerUpItemCooldowns.remove(event.getPlayer()), 20);
 
 
                 String id = nbt.getString(SumoXKeys.NBT_POWERUP_ITEM_TIE);

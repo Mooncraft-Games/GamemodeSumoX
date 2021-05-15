@@ -22,6 +22,7 @@ import net.mooncraftgames.mantle.newgamesapi.game.GameHandler;
 import net.mooncraftgames.mantle.newgamesapi.game.events.GamePlayerDeathEvent;
 import net.mooncraftgames.mantle.newgamesapi.kits.Kit;
 import net.mooncraftgames.mantle.newgamesapi.rewards.PlayerRewardsProfile;
+import net.mooncraftgames.mantle.newgamesapi.rewards.RewardChunk;
 import net.mooncraftgames.mantle.newgamesapi.rewards.RewardsManager;
 import net.mooncraftgames.mantle.newgamesapi.team.Team;
 import net.mooncraftgames.mantle.newgamesapi.team.TeamPresets;
@@ -54,6 +55,7 @@ public class GBehaveSumoBase extends GameBehavior {
 
     protected float gameBaseSpeedMultiplier;
     protected float gameSpeedMultiplier;
+    protected HashMap<Player, Player> lastHit; // Victim, Last Attacker
 
     protected int initialPlayerCount;
 
@@ -66,6 +68,7 @@ public class GBehaveSumoBase extends GameBehavior {
 
     @Override
     public int onGameBegin() {
+        this.lastHit = new HashMap<>();
         getSessionHandler().getPointEntityTypeManager().registerPointEntityType(new PETypeSumoXPowerUpSpot(getSessionHandler()));
         return 5;
     }
@@ -126,10 +129,15 @@ public class GBehaveSumoBase extends GameBehavior {
         int newVal = lifeTally.getOrDefault(player, 1) - 1;
 
         if(newVal <= 0){
+
+            if(lastHit.get(player) != null) getSessionHandler().addRewardChunk(lastHit.get(player), new RewardChunk("kill", "Kill", 6, 3, 2));
+
             player.sendTitle(SumoXStrings.DEAD_TITLE, SumoXStrings.DEAD_SUBTITLE, 5, 50, 5);
             event.setDeathState(GamePlayerDeathEvent.DeathState.MOVE_TO_DEAD_SPECTATORS);
 
         } else {
+            if(lastHit.get(player) != null) getSessionHandler().addRewardChunk(lastHit.get(player), new RewardChunk("final_kill", "Final Kill", 12, 6, 3));
+
             int respawnTime = getSessionHandler().getPrimaryMapID().getIntegers().getOrDefault(SumoXKeys.INT_RESPAWN_SECS, SumoXConstants.DEFAULT_RESPAWN_SECONDS);
 
             if(respawnTime < 1){
@@ -279,6 +287,8 @@ public class GBehaveSumoBase extends GameBehavior {
                     if (attackerkit != null) {
                         attackModifier = SumoUtil.StringToFloat(attackerkit.getProperty(SumoXKeys.KIT_PROP_GIVEN_KB_MULT).orElse(null)).orElse(1.0f);
                     }
+
+                    lastHit.put(player, p);
                 }
 
                 doKnockback(player, event.getDamager(), SumoXConstants.KNOCKBACK_BASE, attackModifier);

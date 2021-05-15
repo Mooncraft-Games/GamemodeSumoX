@@ -64,6 +64,16 @@ public final class SumoXConstants {
     /** A*/
     public static final float UNTOUCHED_TRIP_FINAL_MULTIPLIER = 0.5f;
 
+
+    // -- TOURNEY --
+
+    public static final int POINTS_POWERUP = 1;
+
+    public static final int POINTS_KILL = 2;
+
+    public static final int POINTS_KILL_FINAL = 3;
+
+
     public static final List<Class<? extends PowerUp>> AVAILABLE_POWER_UPS;
 
 
